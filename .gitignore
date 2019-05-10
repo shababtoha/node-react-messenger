@@ -1,0 +1,6 @@
+/.idea/
+/server/env/
+/server/**/__pycache__/
+/server/**/migrations/
+/server/.idea/
+/client/.idea/
