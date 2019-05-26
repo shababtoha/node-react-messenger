@@ -1,6 +1,6 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import Message from '../container/message';
+import MessageContainer from '../container/messageContainer';
 
 
 const styles =  theme => ({
@@ -13,7 +13,7 @@ const styles =  theme => ({
     conversation : {
         minWidth : 350,
         borderRight : '1px solid #B0B3AF',
-        overflowY: 'scroll',
+        overflow: 'hidden',
         [theme.breakpoints.between('xs','sm')]: {
             minWidth: 240
         },
@@ -24,7 +24,7 @@ const styles =  theme => ({
 
     message : {
         width: '100%',
-        overflowY : 'scroll',
+        overflow : 'hidden',
     }
 
 
@@ -40,7 +40,7 @@ const messenger  = (props)=> {
 
             </div>
             <div className={classes.message}>
-                <Message/>
+                <MessageContainer/>
             </div>
         </div>
     )
