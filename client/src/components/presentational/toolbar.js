@@ -11,7 +11,8 @@ const styles = theme => ({
         borderBottom: "1px solid #eeeef1",
         position: "sticky",
         top: "0px",
-        minHeight : 50
+        minHeight : 50,
+        flex : "0 1",
     },
     leftItems : {
         flex: 1,
@@ -32,9 +33,11 @@ const styles = theme => ({
 });
 
 const toolbar = (props) => {
-    const {classes, leftItems, title} = props;
+    let {classes, leftItems, title} = props;
     const rightItems = props.rightItems.map( (item,key)=> <IconButton style={{ cursor : "not-allowed" }} key={key}> {item} </IconButton> );
-
+    if(leftItems) {
+        leftItems = leftItems.map( (item,key) => <IconButton style={{ cursor : "not-allowed" }} key={key}> {item} </IconButton> );
+    }
     return (
         <div className={classes.toolbar} >
             <div className={classes.leftItems}> {leftItems} </div>

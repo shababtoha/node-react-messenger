@@ -4,7 +4,7 @@ import PhoneIcon from '@material-ui/icons/Phone';
 import VideoIcon from '@material-ui/icons/Videocam'
 import TextField from "@material-ui/core/TextField";
 import { withStyles } from '@material-ui/core/styles';
-import Message from './message';
+
 
 const styles = theme => ({
     inputDiv : {
@@ -13,16 +13,14 @@ const styles = theme => ({
         overflowWrap: "break-word",
         marginTop : "auto",
         height : 35,
-        flex : "flex: 0 1",
-
+        flex : "0 1",
     },
     messages : {
-        //marginBottom : "auto",
         flex : "1 1 auto",
         display : 'flex',
         flexDirection: 'column-reverse',
-        overflowY : 'scroll',
-        overflowX : 'hidden',
+        overflowY : "scroll",
+        paddingBottom : 10
     },
     container : {
         display : "flex",
@@ -48,11 +46,8 @@ const messageContainer = (props) => {
                 ]}
             />
             <div className={classes.messages}>
-                <Message me={true} />
-                <Message />
-                <Message />
-
-
+                {props.messages}
+                <div style={{ margin : "5px 5px"}} />
             </div>
             <div className={classes.inputDiv}>
                 <TextField

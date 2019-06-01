@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import MessageContainer from '../container/messageContainer';
-
+import ConversationContainer from '../container/conversationContainer';
 
 const styles =  theme => ({
     container : {
@@ -37,7 +37,7 @@ const messenger  = (props)=> {
     return (
         <div className={classes.container}>
             <div className={classes.conversation}>
-
+                <ConversationContainer/>
             </div>
             <div className={classes.message}>
                 <MessageContainer/>
