@@ -1,9 +1,16 @@
-import React, { Fragment, Component }  from 'react';
+import React, { Component, Fragment }  from 'react';
 import Messenger from './components/presentational/messenger'
+import NavBar from './components/container/navBarContainer';
 
 class App extends Component{
     render() {
-        return <Messenger/>
+        return(
+            <Fragment>
+                <NavBar/>
+                <Messenger/>
+            </Fragment>
+
+        )
     }
 }
 

@@ -29,9 +29,11 @@ const conversationContainer = (props) => {
                     <AddIcons color="primary" style={{ fontSize: 25 }}/>,
                 ]}
             />
-            <ConversationSearch/>
-            <div>
-                {props.conversation}
+            <div style={{ overflowY : "scroll" }}>
+                <ConversationSearch/>
+                <div>
+                    {props.conversation}
+                </div>
             </div>
         </div>
     )
