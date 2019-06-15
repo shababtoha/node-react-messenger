@@ -40,13 +40,13 @@ const styles= theme => ({
         borderBottomRightRadius : 20,
         borderTopLeftRadius : 20,
         borderBottomLeftRadius: 20,
-        backgroundColor: "#CFD3CE",
+        backgroundColor: "#f4f4f8",
         marginLeft : 5,
         textAlign : 'left',
     },
     avatar: {
-        height : 30,
-        width : 30,
+        height : 25,
+        width : 25,
         bottom : 3
     }
 });

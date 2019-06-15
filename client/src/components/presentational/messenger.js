@@ -30,10 +30,8 @@ const styles =  theme => ({
 
 });
 
-
 const messenger  = (props)=> {
     const {classes} = props;
-
     return (
         <div className={classes.container}>
             <div className={classes.conversation}>

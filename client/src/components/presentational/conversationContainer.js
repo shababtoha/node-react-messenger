@@ -6,22 +6,13 @@ import AddIcons from '@material-ui/icons/AddCircle';
 import { withStyles } from '@material-ui/core/styles';
 
 
+
 const styles =  theme => ({
     container: {
         display: "flex",
         flexDirection: "column",
         height: '100%',
     },
-    conversation: {
-        flex: 1,
-        overflowY: 'scroll'
-    },
-    search: {
-        height: 30,
-        borderRadius : 10,
-        margin : "5px 5px"
-
-    }
 });
 
 
@@ -39,6 +30,9 @@ const conversationContainer = (props) => {
                 ]}
             />
             <ConversationSearch/>
+            <div>
+                {props.conversation}
+            </div>
         </div>
     )
 };

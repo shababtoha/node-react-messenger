@@ -28,9 +28,6 @@ const styles = theme => ({
         height : '100%',
 
     },
-    input : {
-        underline : 'none'
-    }
 });
 
 
@@ -61,6 +58,5 @@ const messageContainer = (props) => {
         </div>
     )
 };
-
 
 export default withStyles(styles)(messageContainer);
