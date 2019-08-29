@@ -1,14 +1,24 @@
-const express = require('express');
-const graphqlHTTP = require('express-graphql');
-const schema = require('./schema');
-const app = express();
-const port = process.env.PORT || 8080;
+const jwt = require('jsonwebtoken');
+const secret = "holyHera";
+const { ApolloServer } = require('apollo-server');
+const typeDefs = require('./typeDefs');
+const resolvers = require('./resolvers');
 
-app.use('/graphql', graphqlHTTP({
-   schema,
-   graphiql: true
-}));
+const context = function({req}){
+    const token = req.headers.token;
+    try {
+       return jwt.verify(token, secret);
+    } catch (e) {
+       return {id: null}
+    }
+};
 
-app.listen(port, ()=> {
-   console.log(`server is running on port ${port}`);
+const server = new ApolloServer({
+   typeDefs,
+   resolvers,
+   context
+});
+
+server.listen().then(({ url }) => {
+   console.log(`🚀 Server ready at ${url}`);
 });

@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Messages', {
+    return queryInterface.createTable('messages', {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -12,22 +12,22 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      SentBy: {
+      sentBy: {
         type: Sequelize.UUID,
         onDelete: 'CASCADE',
         allowNull: false,
         references: {
-          model: 'Users',
+          model: 'users',
           key: 'id'
         }
 
       },
-      ConversationId: {
+      conversationId: {
         type: Sequelize.UUID,
         onDelete: 'CASCADE',
         allowNull: false,
         references: {
-          model: 'Conversations',
+          model: 'conversations',
           key: 'id'
         }
       },
@@ -45,6 +45,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Messages');
+    return queryInterface.dropTable('messages');
   }
 };

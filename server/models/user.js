@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('User', {
+  const user = sequelize.define('user', {
     id: {
       allowNull: false,
       primaryKey: true,
@@ -32,16 +32,16 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     }
   }, {});
-  User.associate = function(models) {
-    User.hasMany(models.Participant, {
-        foreignKey: "UserId",
+  user.associate = function(models) {
+    user.hasMany(models.participant, {
+        foreignKey: "userId",
         onDelete: "CASCADE",
     });
 
-    User.hasMany(models.Message, {
-      foreignKey: "UserId",
+    user.hasMany(models.message, {
+      foreignKey: "userId",
       onDelete: "CASCADE",
     })
   };
-  return User;
+  return user;
 };

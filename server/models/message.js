@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Message = sequelize.define('Message', {
+  const message = sequelize.define('message', {
     id: {
       allowNull: false,
       primaryKey: true,
@@ -15,17 +15,17 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     }
   }, {});
-  Message.associate = function(models) {
+  message.associate = function(models) {
     // associations can be defined here
-    Message.belongsTo(models.User, {
-      foreignKey: "SentBy",
+    message.belongsTo(models.user, {
+      foreignKey: "sentBy",
       onDelete: "CASCADE"
     });
 
-    Message.belongsTo(models.Conversation, {
-      foreignKey: "ConversationId",
+    message.belongsTo(models.conversation, {
+      foreignKey: "conversationId",
       onDelete: "CASCADE"
     });
   };
-  return Message;
+  return message;
 };

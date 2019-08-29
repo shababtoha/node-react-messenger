@@ -1,28 +1,28 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Participants', {
+    return queryInterface.createTable('participants', {
       id: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4
       },
-      ConversationId: {
+      conversationId: {
         type: Sequelize.UUID,
         onDelete: "CASCADE",
         allowNull: false,
         references: {
-          model: 'Conversations',
+          model: 'conversations',
           key: 'id'
         }
       },
-      UserId: {
+      userId: {
         type: Sequelize.UUID,
         onDelete: "CASCADE",
         allowNull: false,
         references: {
-          model: "Users",
+          model: "users",
           key: 'id'
         }
       },
@@ -38,6 +38,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Participants');
+    return queryInterface.dropTable('participants');
   }
 };

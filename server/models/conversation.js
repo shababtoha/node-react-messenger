@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Conversation = sequelize.define('Conversation', {
+  const conversation = sequelize.define('conversation', {
     id: {
       allowNull: false,
       primaryKey: true,
@@ -12,16 +12,16 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
   }, {});
-  Conversation.associate = function(models) {
-    Conversation.hasMany(models.Participant,{
-      foreignKey: "ConversationId",
+  conversation.associate = function(models) {
+    conversation.hasMany(models.participant,{
+      foreignKey: "conversationId",
       onDelete: "CASCADE",
     });
 
-    Conversation.hasMany(models.Message, {
-      foreignKey: "ConversationId",
+    conversation.hasMany(models.message, {
+      foreignKey: "conversationId",
       onDelete: "CASCADE",
     });
   };
-  return Conversation;
+  return conversation;
 };

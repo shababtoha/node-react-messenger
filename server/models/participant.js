@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Participant = sequelize.define('Participant', {
+  const participant = sequelize.define('participant', {
     id: {
       allowNull: false,
       primaryKey: true,
@@ -8,16 +8,16 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4
     },
   }, {});
-  Participant.associate = function(models) {
-    Participant.belongsTo(models.Conversation, {
-      foreignKey: "ConversationId",
+  participant.associate = function(models) {
+    participant.belongsTo(models.conversation, {
+      foreignKey: "conversationId",
       onDelete: "CASCADE"
     });
 
-    Participant.belongsTo(models.User, {
-      foreignKey: "UserId",
+    participant.belongsTo(models.user, {
+      foreignKey: "userId",
       onDelete: "CASCADE"
     })
   };
-  return Participant;
+  return participant;
 };
