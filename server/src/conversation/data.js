@@ -1,36 +1,67 @@
-const conversation = require('../../models').conversation;
-const participant = require('../../models').participant;
-const user = require('../../models').user;
+const Conversation = require('../../models').conversation;
+const Participant = require('../../models').participant;
+const User = require('../../models').user;
+const Sequelize = require('../../models').sequelize;
 
 const Op = require("sequelize").Op;
 
+function getConversation(id) {
+    return Conversation.findByPk(id, {
+        include: [{
+            model: Participant,
+            include: [
+                {
+                    model: User
+                }
+            ]
+        }]
+    });
+}
+
 module.exports = {
-    getConversations : (id)=>{
-        return participant.findAll({
+    getConversations: (userId) => {
+        return Participant.findAll({
             attributes: ['conversationId'],
             where: {
-                userId: id
+                userId: userId
             },
-        }).then(res=>{
-            const ids = res.map(item=>item.dataValues.conversationId);
-            console.log(ids);
-            return conversation.findAll({
+        }).then(res => {
+            const ids = res.map(item => item.dataValues.conversationId);
+            return Conversation.findAll({
                 where: {
                     id: {
                         [Op.in]: ids
                     }
                 },
                 include: [{
-                    model: participant,
+                    model: Participant,
                     include: [
                         {
-                            model: user
+                            model: User
                         }
                     ]
                 }]
-            }).then(result=>{
+            }).then(result => {
                 return result;
             })
+        })
+    },
+
+    getConversation,
+
+    createConversation: (userIds, title) => {
+        return Sequelize.transaction(t => {
+            return Conversation.create({title}, {transaction: t})
+                .then(conversation => {
+                    let newParticipants = userIds.map(userId => {
+                        return {'conversationId': conversation.id, 'userId': userId}
+                    });
+                    return Participant.bulkCreate(newParticipants, {
+                        transaction: t,
+                    }).then( ()=>{
+                        return { conversationId: conversation.id};
+                    });
+                });
         })
     }
 };

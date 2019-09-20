@@ -1,5 +1,6 @@
 const user = require('./src/user/typeDefs');
 const conversation = require('./src/conversation/typeDefs');
+const message = require('./src/message/typedefs');
 const { gql } = require('apollo-server');
 
 const Query = gql`
@@ -17,4 +18,5 @@ module.exports = [
     Query,
     user,
     conversation,
+    message,
 ];

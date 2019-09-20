@@ -1,5 +1,6 @@
 const User = require('./src/user/resolvers');
 const Conversation = require('./src/conversation/resolvers');
+const Message = require('./src/message/resolvers');
 const { merge } = require("lodash");
 
 const emptyResolver = {
@@ -19,4 +20,5 @@ module.exports = merge(
     emptyResolver,
     User,
     Conversation,
+    Message,
 );

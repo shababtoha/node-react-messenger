@@ -19,7 +19,6 @@ module.exports = {
     },
     Mutation: {
         register: (_,{user})=>{
-            console.log(user);
             return User.register(user);
         },
 

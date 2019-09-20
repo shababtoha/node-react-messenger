@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     user.hasMany(models.message, {
-      foreignKey: "userId",
+      foreignKey: "sentBy",
       onDelete: "CASCADE",
     })
   };
