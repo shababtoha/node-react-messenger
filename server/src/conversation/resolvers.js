@@ -22,7 +22,7 @@ module.exports = {
             return Conversation.createConversation(userIds, title)
                 .then(data => {
                     return Conversation.getConversation(data.conversationId);
-                })
+                });
         }
     }
 };

@@ -41,10 +41,8 @@ module.exports = {
                         }
                     ]
                 }]
-            }).then(result => {
-                return result;
-            })
-        })
+            });
+        });
     },
 
     getConversation,

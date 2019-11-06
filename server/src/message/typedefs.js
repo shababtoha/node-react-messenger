@@ -14,7 +14,7 @@ const  typeDefs = gql`
         message: String
         conversationId: String!
         attachment_url: String
-        sentBy: User
+        user: User
     }
     
     input MessageInput {

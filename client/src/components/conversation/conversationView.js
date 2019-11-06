@@ -1,9 +1,9 @@
 import React from 'react';
-import Toolbar from './toolbar';
-import ConversationSearch from './conversationSearch';
+import Toolbar from '../presentational/toolbar';
+import ConversationSearch from '../presentational/conversationSearch';
 import SettingsIcon from '@material-ui/icons/Settings';
 import AddIcons from '@material-ui/icons/AddCircle';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles/index';
 
 
 
@@ -11,12 +11,12 @@ const styles =  theme => ({
     container: {
         display: "flex",
         flexDirection: "column",
-        height: '100%',
+        height: '100vh',
     },
 });
 
 
-const conversationContainer = (props) => {
+const conversationView = (props) => {
     const {classes} = props;
     return (
         <div  className={classes.container}>
@@ -39,4 +39,4 @@ const conversationContainer = (props) => {
     )
 };
 
-export default withStyles(styles)(conversationContainer);
+export default withStyles(styles)(conversationView);

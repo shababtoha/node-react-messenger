@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import MessageContainerPresentational from '../presentational/messageContainer';
 import Message from '../presentational/message';
-
+import {Link} from 'react-router-dom';
 
 function getM() {
     return  [
@@ -65,12 +65,6 @@ function getM() {
             message: 'It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!',
             timestamp: new Date().getTime()
         },
-        {
-            id: 9,
-            author: 'orange',
-            message: 'Microstrip patch antenna is a popular antenna widely used due to its compact size. They are used in a variety of fields. In this project, the antenna was designed for WLAN application, particularly in IEEE 802.11a standard. The target resonant frequency was selected to be 5.2 GHz. The antenna parameters were calculated after setting this frequency. The antenna was designed by the simulation software.  After a lot of simulations, the best possible values were chosen by trial-and-error method.',
-            timestamp: new Date().getTime()
-        },
     ];
 }
 
@@ -90,7 +84,11 @@ class MessageContainer extends Component {
     componentDidMount() {
         let messages = getM();
         let rendered = messages.map( (item,key) => {
-            return <Message me={this.state.author === item.author} key={key}  text={item.message} />
+            return (
+                <Link to={ (location) => `${location.pathname}`} key={key} style={{ textDecoration: "none" }}>
+                    <Message me={this.state.author === item.author} key={key}  text={item.message} />
+                </Link>
+            )
         });
 
         this.setState({
