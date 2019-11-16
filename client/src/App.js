@@ -13,7 +13,7 @@ class App extends Component{
                     <Switch>
                         <Route path="/login" exact component={ ()=> <Login signUp={false} /> } />
                         <Route path="/signup" exact component={ ()=> <Login signUp={true} /> } />
-                        <Route path="/message/*" exact component={ ()=> <Messenger/>} />
+                        <Route path="/message/:id?" exact component={ ()=> <Messenger/>} />
                         <Route path="*" component={()=> <Redirect to="/message/" />} />
                     </Switch>
                 </div>

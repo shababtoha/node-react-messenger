@@ -10,7 +10,8 @@ module.exports = {
             if(!context.id) {
                 throw new AuthenticationError("User Credentials has not provided");
             }
-            if(id === 'me') id =context.id;
+            if(id === 'me') id = context.id;
+            console.log(id);
             return User.get(id);
         },
         login: (_,{username, password})=>{

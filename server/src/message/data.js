@@ -7,6 +7,9 @@ module.exports = {
             where: {
                 "conversationId": conversationId
             },
+            order: [
+                ['createdAt','DESC']
+            ],
             include :[
                 {
                     model: user

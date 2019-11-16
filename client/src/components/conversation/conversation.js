@@ -4,13 +4,17 @@ import ConversationComponent from '../presentational/conversation';
 import { Query } from "react-apollo";
 import { CONVERSATION_QUERY } from './queries'
 import { withRouter } from "react-router-dom";
+import { Redirect } from 'react-router-dom'
 
 
 class Conversation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            conversation : [],
+            errors: {
+
+            },
+            conversationId: props.match.params.id
         };
     }
 
@@ -45,15 +49,28 @@ class Conversation extends Component {
     // }
 
     render() {
+        console.log( typeof this.state.conversationId);
         return (
             <Query query={CONVERSATION_QUERY}>
             {({ loading, error, data }) => {
                 if(loading) return <div> loading </div>;
                 if(error) {
                     console.log(error);
-                    return <div>error</div>;
+                    return  error.graphQLErrors.map(({ message }, i) => {
+                        if (message === "Authentication Credentials was not provided") {
+                            localStorage.removeItem("authToken");
+                            //this.props.history.push('/login');
+                            return <Redirect to={'/login'+this.state.conversationId } />
+                        } else {
+                            return <p> error </p>
+                        }
+                    });
                 }
-                //console.log(data);
+                if(this.state.conversationId === undefined &&  data.getConversations && data.getConversations.length > 0) {
+                    this.state.conversationId =  data.getConversations[0].id;
+                    //this.props.history.push('/message/'+  this.state.conversationId);
+                    return <Redirect to={'/message/'+this.state.conversationId } />
+                }
                 const conversation = data.getConversations.map((item,key)=>{
                     return <ConversationComponent
                         key={key}

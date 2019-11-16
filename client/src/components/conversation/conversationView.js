@@ -29,7 +29,7 @@ const conversationView = (props) => {
                     <AddIcons color="primary" style={{ fontSize: 25 }}/>,
                 ]}
             />
-            <div style={{ overflowY : "scroll" }}>
+            <div style={{ overflowY : "scroll", minHeight: '100vh' }}>
                 <ConversationSearch/>
                 <div>
                     {props.conversation}

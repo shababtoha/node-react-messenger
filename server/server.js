@@ -6,7 +6,6 @@ const resolvers = require('./resolvers');
 
 const context = function({req}){
     const token = req.headers.token;
-    console.log( new Date() + " Token :"+ token );
     try {
        return jwt.verify(token, secret);
     } catch (e) {

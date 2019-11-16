@@ -1,5 +1,6 @@
 const Message = require('./data');
 const {AuthenticationError} = require('apollo-server');
+const  User  = require('../user/data');
 
 module.exports = {
     Query: {
@@ -14,7 +15,12 @@ module.exports = {
             if (!context.id)
                 throw new AuthenticationError("User Credentials has not provided");
             message.sentBy = context.id;
-            return Message.createMessage(message);
+            //console.log(message);
+            return Message.createMessage(message).then(result => {
+                const user = User.get(context.id);
+                result.user = user;
+                return result;
+            });
         }
     }
 };
