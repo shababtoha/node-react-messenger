@@ -61,5 +61,13 @@ module.exports = {
                     });
                 });
         })
+    },
+    getUsers: (conversationId) => {
+        return Participant.findAll({
+            attributes: ['userId'],
+            where: {
+                conversationId
+            }
+        })
     }
 };

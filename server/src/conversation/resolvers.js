@@ -24,5 +24,5 @@ module.exports = {
                     return Conversation.getConversation(data.conversationId);
                 });
         }
-    }
+    },
 };

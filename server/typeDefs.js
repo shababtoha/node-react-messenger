@@ -4,6 +4,10 @@ const message = require('./src/message/typedefs');
 const { gql } = require('apollo-server');
 
 const Query = gql`
+    type Subscription {
+        messageAdded: Message
+    }    
+
     type Query {
         empty: String!
     }
