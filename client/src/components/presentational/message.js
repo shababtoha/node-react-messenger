@@ -65,7 +65,7 @@ const message= (props) => {
                         />
                     }
                     </div>
-                    <Typography className={ props.me ? classes.myText : classes.otherText } >
+                    <Typography className={ props.me ? classes.myText : classes.otherText } style={{ whiteSpace: 'pre-line'}} >
                         { props.text }
                     </Typography>
                 </Message>

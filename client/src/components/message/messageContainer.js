@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import MessageContainerView from './messageContainerView';
 import MessageComponent from '../presentational/message';
 import { withRouter } from "react-router-dom";
-import { Query, Mutation } from "react-apollo";
+import { Query, Mutation, Subscription } from "react-apollo";
 import {
     GET_MESSAGE_QUERY,
     GET_CONVERSATION_QUERY,
+    MESSAGE_SUBSCIPTION
 }  from './queries'
 
 const RenderMessage = (props) => {
@@ -29,7 +30,7 @@ const RenderMessage = (props) => {
                         onChange={props.handleInputChange}
                         value={props.value}
                         conversationId={props.conversationId }
-                        sendMessage={props.sendMessage}
+                        title={props.title}
                     />
             }}
         </Query>
@@ -49,15 +50,10 @@ class MessageContainer extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
     }
 
-    handleInputChange(e) {
-        if(e.key ===  'Enter') {
-          //  document.getElementById("inputForm").submit();
-        } else {
+    handleInputChange(value) {
             this.setState({
-                message: e.target.value,
-                sendMessage: false
+                message: value,
             });
-        }
     }
 
     render() {
@@ -76,13 +72,11 @@ class MessageContainer extends Component {
                         username={this.state.user.username}
                         handleInputChange={this.handleInputChange}
                         value={this.state.message}
-                        sendMessage={this.state.sendMessage}
                     />
                 }}
             </Query>
         )
     }
-
 }
 
 export default withRouter(MessageContainer);

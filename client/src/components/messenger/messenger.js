@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { styles } from './styles'
 import { Query } from "react-apollo";
 import { GET_ME_QUERY } from './queries';
-
+import { Redirect } from 'react-router-dom'
 
 const messenger  = (props)=> {
     const {classes} = props;
@@ -22,7 +22,7 @@ const messenger  = (props)=> {
                 if(loading) return <p>loading</p>
                 if(error) {
                     console.log("GET ME ERROR "+ error);
-                    return <p>errro</p>
+                    return <Redirect to="/login" />
                 }
                 const user = data.user;
                 return (

@@ -12,6 +12,7 @@
     "apollo-link": "^1.2.13",
     "apollo-link-context": "^1.0.19",
     "apollo-link-http": "^1.5.16",
+    "apollo-link-ws": "^1.0.19",
     "graphql": "^14.5.8",
     "graphql-tag": "^2.10.1",
     "react": "^16.8.6",
@@ -19,7 +20,8 @@
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
-    "styled-components": "latest"
+    "styled-components": "latest",
+    "subscriptions-transport-ws": "^0.9.16"
   },
   "proxy": "http://localhost:4000/",
   "scripts": {

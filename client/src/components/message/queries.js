@@ -7,6 +7,7 @@ export const GET_MESSAGE_QUERY = gql`
             conversationId
             message
             user {
+                id
                 username
             }
         }
@@ -20,6 +21,7 @@ export const GET_CONVERSATION_QUERY = gql`
             participants {
                 id
                 user {
+                    id
                     username
                 }
             }
@@ -39,4 +41,16 @@ export const CREATE_MESSAGE_QUERY = gql`
             }
         }
     }
+`;
+
+export const MESSAGE_SUBSCIPTION = gql`
+    subscription messageAdded {
+        id
+        message
+        conversationId
+        user {
+          username
+          id
+        }
+    }  
 `;

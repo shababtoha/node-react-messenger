@@ -36,10 +36,11 @@ const styles = theme => ({
 
 const messageContainer = (props) => {
     const {classes} = props;
+    // console.log(props);
     return (
         <div className={classes.container}>
             <Toolbar
-                title={ "Conversation Title" }
+                title={ props.title? props.title : "Conversation Title" }
                 rightItems = {[
                     <VideoIcon color="primary" style={{ fontSize: 25 }}/>,
                     <PhoneIcon color="primary" style={{ fontSize : 25 }}/> ,
@@ -58,6 +59,7 @@ const messageContainer = (props) => {
                                 conversationId: props.conversationId
                             }
                         });
+                        console.log(cache.data.data);
                         cache.writeQuery({
                             query: GET_MESSAGE_QUERY,
                             variables : {
@@ -66,27 +68,34 @@ const messageContainer = (props) => {
                             data: {
                                 getMessages: [createMessage].concat(getMessages)
                             }
-                        })
+                        });
+                        console.log(cache.data.data);
                     }}
                 >
                     {(sendMessage) => (
-                         <form onSubmit={event => {
-                            event.preventDefault();
-                            sendMessage({
-                                variables: {
-                                    MessageInput: {
-                                        message: props.value,
-                                        conversationId: props.conversationId
-                                    }
+                        <TextField
+                            id="newText"
+                            multiline
+                            rowsMax="4"
+                            fullWidth
+                            onKeyUp={e => {
+                                const key = e.keyCode;
+                                if(key === 13 && !e.shiftKey) {
+                                    sendMessage({
+                                        variables: {
+                                            MessageInput: {
+                                                message: props.value,
+                                                conversationId: props.conversationId
+                                            }
+                                        }
+                                    });
+                                    e.target.value = "";
+                                    props.onChange("");
+                                } else {
+                                    props.onChange(e.target.value);
                                 }
-                            })
-                        }} id="inputForm">
-                            <input
-                                id="newText"
-                                placeholder="type to chat"
-                                onKeyPress={props.onChange}
-                            />
-                        </form>
+                            }}
+                        />
                         )}
                 </Mutation>
             </div>
