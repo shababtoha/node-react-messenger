@@ -7,6 +7,30 @@ export const CONVERSATION_QUERY = gql`
             title
             createdAt
             updatedAt
+            messages {
+                message
+            }
+        }
+    }
+`;
+
+export const GET_USERS_QUERY = gql`
+    query Users($username: String!) {
+        users(username: $username) {
+            id
+            username
+            email
+        }
+    }
+`;
+
+export const CREATE_CONVERSATION_QUERY = gql`
+    mutation CreateConversation($userIds: [String!]!, $title : String!) {
+        createConversation(userIds: $userIds, title: $title) {
+            id
+            title
+            createdAt
+            updatedAt
         }
     }
 `;

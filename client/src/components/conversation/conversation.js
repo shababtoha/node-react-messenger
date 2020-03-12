@@ -8,6 +8,7 @@ import { Redirect } from 'react-router-dom'
 import ConversationModal from './newConversationModal';
 
 
+
 class Conversation extends Component {
     constructor(props) {
         super(props);
@@ -15,15 +16,42 @@ class Conversation extends Component {
             errors: {
 
             },
-            conversationId: props.match.params.id
+            conversationId: props.match.params.id,
+            newConversation: false
         };
+        this.addConversation = this.addConversation.bind(this);
+        this.conversationStateChange = this.conversationStateChange.bind(this);
+    }
+
+    conversationStateChange() {
+        this.setState({
+            newConversation: !this.state.newConversation
+        })
+    }
+
+    addConversation(client, newConversation) {
+        let {getConversations} = client.readQuery({
+            query: CONVERSATION_QUERY
+        });
+        client.writeQuery({
+            query: CONVERSATION_QUERY,
+            data: {
+                 getConversations: [newConversation.data.createConversation, ...getConversations]
+            }
+        });
+        console.log(newConversation);
     }
 
     render() {
         console.log( typeof this.state.conversationId);
         return (
             <Fragment>
-                {/*<ConversationModal/>*/}
+                { this.state.newConversation &&
+                    <ConversationModal
+                    addConversation={this.addConversation}
+                    onCancel={this.conversationStateChange}
+                />
+                }
                 <Query query={CONVERSATION_QUERY}>
                 {({ loading, error, data }) => {
                     if(loading) return <div> loading </div>;
@@ -44,16 +72,22 @@ class Conversation extends Component {
                         //this.props.history.push('/message/'+  this.state.conversationId);
                         return <Redirect to={'/message/'+this.state.conversationId } />
                     }
+                    console.log(data.getConversations);
                     const conversation = data.getConversations.map((item,key)=>{
                         return <ConversationComponent
                             key={key}
                             avatar="http://maestroselectronics.com/wp-content/uploads/bfi_thumb/blank-user-355ba8nijgtrgca9vdzuv4.jpg"
                             title={item.title}
-                            text={ 'Hello world! This is a long message that needs to be truncated.' }
+                            text={ item.messages.length > 0 ?
+                                    item.messages[0].message : ""
+                            }
                         />
                     });
                     return (
-                        <ConversationView conversation={conversation} />
+                        <ConversationView
+                            conversation={conversation}
+                            addConversationButtonClick={this.conversationStateChange}
+                        />
                     );
                 }}
                 </Query>

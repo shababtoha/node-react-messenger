@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
+
 
 const styles = theme => ({
     toolbar : {
@@ -34,15 +34,18 @@ const styles = theme => ({
 
 const toolbar = (props) => {
     let {classes, leftItems, title} = props;
-    const rightItems = props.rightItems.map( (item,key)=> <IconButton style={{ cursor : "not-allowed" }} key={key}> {item} </IconButton> );
-    if(leftItems) {
-        leftItems = leftItems.map( (item,key) => <IconButton style={{ cursor : "not-allowed" }} key={key}> {item} </IconButton> );
-    }
+    // const rightItems = props.rightItems.map( (item,key)=> <IconButton  key={key}> {item} </IconButton> );
+    // if(leftItems) {
+    //     leftItems = leftItems.map((item,key) =>
+    //          <IconButton
+    //             key={key}> {item}
+    //         </IconButton>);
+    // }
     return (
         <div className={classes.toolbar} >
-            <div className={classes.leftItems}> {leftItems} </div>
+            <div className={classes.leftItems}> {props.leftItems} </div>
             <Typography className={classes.title} variant="h5"  noWrap> {title} </Typography>
-            <div className={classes.rightItems} > {rightItems} </div>
+            <div className={classes.rightItems} > {props.rightItems} </div>
         </div>
     )
 };

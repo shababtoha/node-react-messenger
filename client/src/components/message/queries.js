@@ -42,15 +42,3 @@ export const CREATE_MESSAGE_QUERY = gql`
         }
     }
 `;
-
-export const MESSAGE_SUBSCIPTION = gql`
-    subscription messageAdded {
-        id
-        message
-        conversationId
-        user {
-          username
-          id
-        }
-    }  
-`;

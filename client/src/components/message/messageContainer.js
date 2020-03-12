@@ -1,12 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import MessageContainerView from './messageContainerView';
 import MessageComponent from '../presentational/message';
 import { withRouter } from "react-router-dom";
-import { Query, Mutation, Subscription } from "react-apollo";
+import { Query } from "react-apollo";
 import {
     GET_MESSAGE_QUERY,
     GET_CONVERSATION_QUERY,
-    MESSAGE_SUBSCIPTION
 }  from './queries'
 
 const RenderMessage = (props) => {
@@ -60,21 +59,23 @@ class MessageContainer extends Component {
         const conversationId = this.props.match.params.id;
         if(!conversationId) return null;
         return (
-            <Query query={GET_CONVERSATION_QUERY} variables={{ id: conversationId }} >
-                {({loading, error, data}) => {
-                    if(loading) return <p> loading </p>;
-                    if(error) {
-                        return <p> error </p>
-                    }
-                    return <RenderMessage
-                        title={data.getConversation.title}
-                        conversationId={conversationId}
-                        username={this.state.user.username}
-                        handleInputChange={this.handleInputChange}
-                        value={this.state.message}
-                    />
-                }}
-            </Query>
+            <Fragment>
+                <Query query={GET_CONVERSATION_QUERY} variables={{ id: conversationId }} >
+                    {({loading, error, data}) => {
+                        if(loading) return <p> loading </p>;
+                        if(error) {
+                            return <p> error </p>
+                        }
+                        return <RenderMessage
+                            title={data.getConversation.title}
+                            conversationId={conversationId}
+                            username={this.state.user.username}
+                            handleInputChange={this.handleInputChange}
+                            value={this.state.message}
+                        />
+                    }}
+                </Query>
+            </Fragment>
         )
     }
 }

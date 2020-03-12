@@ -6,7 +6,7 @@ import TextField from "@material-ui/core/TextField/index";
 import { withStyles } from '@material-ui/core/styles/index';
 import { Mutation } from "react-apollo";
 import { CREATE_MESSAGE_QUERY , GET_MESSAGE_QUERY } from './queries';
-
+import IconButton from '@material-ui/core/IconButton';
 
 
 const styles = theme => ({
@@ -33,18 +33,23 @@ const styles = theme => ({
     },
 });
 
-
 const messageContainer = (props) => {
     const {classes} = props;
-    // console.log(props);
+    let rightIcons = [
+        <IconButton>
+            <VideoIcon color="primary" style={{ fontSize: 25 }}/>
+        </IconButton>,
+        <IconButton>
+            <PhoneIcon color="primary" style={{ fontSize : 25 }}/>
+        </IconButton>
+        ,
+    ];
+    let rightItems = rightIcons.map((item,key)=> <span key={key}> {item} </span>);
     return (
         <div className={classes.container}>
             <Toolbar
                 title={ props.title? props.title : "Conversation Title" }
-                rightItems = {[
-                    <VideoIcon color="primary" style={{ fontSize: 25 }}/>,
-                    <PhoneIcon color="primary" style={{ fontSize : 25 }}/> ,
-                ]}
+                rightItems = {rightItems}
             />
             <div className={classes.messages}>
                 {props.messages}
@@ -53,23 +58,23 @@ const messageContainer = (props) => {
             <div className={classes.inputDiv}>
                 <Mutation mutation={CREATE_MESSAGE_QUERY}
                     update={(cache, { data : { createMessage } }) => {
-                        const { getMessages } =  cache.readQuery({
-                            query: GET_MESSAGE_QUERY,
-                            variables : {
-                                conversationId: props.conversationId
-                            }
-                        });
-                        console.log(cache.data.data);
-                        cache.writeQuery({
-                            query: GET_MESSAGE_QUERY,
-                            variables : {
-                                conversationId: props.conversationId
-                            },
-                            data: {
-                                getMessages: [createMessage].concat(getMessages)
-                            }
-                        });
-                        console.log(cache.data.data);
+                        // const { getMessages } =  cache.readQuery({
+                        //     query: GET_MESSAGE_QUERY,
+                        //     variables : {
+                        //         conversationId: props.conversationId
+                        //     }
+                        // });
+                        // console.log(cache.data.data);
+                        // cache.writeQuery({
+                        //     query: GET_MESSAGE_QUERY,
+                        //     variables : {
+                        //         conversationId: props.conversationId
+                        //     },
+                        //     data: {
+                        //         getMessages: [createMessage].concat(getMessages)
+                        //     }
+                        // });
+                        // console.log("cache" + cache);
                     }}
                 >
                     {(sendMessage) => (
