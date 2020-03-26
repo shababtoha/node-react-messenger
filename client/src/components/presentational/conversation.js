@@ -33,7 +33,11 @@ const styles = theme => ({
 const conversation = (props) => {
     const { classes } = props;
     return (
-        <div className={classes.container}>
+        <div className={classes.container}
+             onClick={()=> {
+                 props.onClick(props.conversationId)
+             }}
+        >
             <Avatar
                 className={classes.avatar}
                 src={props.avatar}
