@@ -1,6 +1,7 @@
 const Conversation = require('../../models').conversation;
 const Participant = require('../../models').participant;
 const User = require('../../models').user;
+const Message = require('../../models').message;
 const Sequelize = require('../../models').sequelize;
 
 const Op = require("sequelize").Op;
@@ -20,29 +21,28 @@ function getConversation(id) {
 
 module.exports = {
     getConversations: (userId) => {
-        return Participant.findAll({
-            attributes: ['conversationId'],
-            where: {
-                userId: userId
-            },
-        }).then(res => {
-            const ids = res.map(item => item.dataValues.conversationId);
-            return Conversation.findAll({
-                where: {
-                    id: {
-                        [Op.in]: ids
+        return Conversation.findAll({
+            include: [
+                {
+                    model: Participant,
+                    where: {
+                        userId
                     }
                 },
-                include: [{
-                    model: Participant,
+                {
+                    model: Message,
+                    limit: 1,
                     include: [
                         {
                             model: User
                         }
+                    ],
+                    order: [
+                        ['createdAt', 'DESC']
                     ]
-                }]
-            });
-        });
+                }
+            ]
+        })
     },
 
     getConversation,
@@ -60,14 +60,15 @@ module.exports = {
                         return { conversationId: conversation.id};
                     });
                 });
-        })
+        });
     },
+
     getUsers: (conversationId) => {
         return Participant.findAll({
             attributes: ['userId'],
             where: {
                 conversationId
             }
-        })
+        });
     }
 };

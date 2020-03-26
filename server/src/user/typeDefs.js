@@ -2,7 +2,7 @@ const { gql } = require('apollo-server');
 
 const typeDefs = gql`
     extend type Query {
-        users: [User]!
+        users(username: String!): [User]!
         user(id: String!): User
         login(username: String!, password: String!): Token! 
     }

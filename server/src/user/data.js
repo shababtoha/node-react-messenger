@@ -2,13 +2,24 @@ const User = require('../../models').user;
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const secret = "holyHera";
+const { Op } = require("sequelize");
 const {
     AuthenticationError,
 } = require('apollo-server');
 
 module.exports = {
-    getAll: () => {
-        return User.findAll()
+    getAll: (username) => {
+        let condition = {};
+        if(username) {
+            condition = {
+                where: {
+                    username: {
+                        [Op.startsWith]: username
+                    }
+                }
+            }
+        }
+        return User.findAll(condition)
             .then(users => {
                 return users;
             })

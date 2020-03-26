@@ -3,8 +3,11 @@ const { AuthenticationError } = require('apollo-server');
 
 module.exports = {
     Query: {
-        users: ()=>{
-          return User.getAll();
+        users: (_,{username}, context)=>{
+            if(!context.id) {
+                throw new AuthenticationError("User Credentials has not provided");
+            }
+            return User.getAll(username);
         },
         user: (_,{id}, context) => {
             if(!context.id) {

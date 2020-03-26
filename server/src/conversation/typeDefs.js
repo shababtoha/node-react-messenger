@@ -16,6 +16,7 @@ const typeDefs = gql`
         createdAt: String!
         updatedAt: String!
         participants: [Participant]
+        messages: [Message]
     }
     
     type Participant {
