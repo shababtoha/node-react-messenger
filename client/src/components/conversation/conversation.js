@@ -21,6 +21,11 @@ class Conversation extends Component {
         };
         this.addConversation = this.addConversation.bind(this);
         this.conversationStateChange = this.conversationStateChange.bind(this);
+        this.changeConversation = this.changeConversation.bind(this);
+    }
+
+    changeConversation(conversationId) {
+        this.props.history.push('/message/'+conversationId);
     }
 
     conversationStateChange() {
@@ -39,7 +44,6 @@ class Conversation extends Component {
                  getConversations: [newConversation.data.createConversation, ...getConversations]
             }
         });
-        console.log(newConversation);
     }
 
     render() {
@@ -48,9 +52,9 @@ class Conversation extends Component {
             <Fragment>
                 { this.state.newConversation &&
                     <ConversationModal
-                    addConversation={this.addConversation}
-                    onCancel={this.conversationStateChange}
-                />
+                        addConversation={this.addConversation}
+                        onCancel={this.conversationStateChange}
+                    />
                 }
                 <Query query={CONVERSATION_QUERY}>
                 {({ loading, error, data }) => {
@@ -81,6 +85,8 @@ class Conversation extends Component {
                             text={ item.messages.length > 0 ?
                                     item.messages[0].message : ""
                             }
+                            conversationId={item.id}
+                            onClick={this.changeConversation}
                         />
                     });
                     return (
