@@ -73,11 +73,10 @@ class newConversationModal extends Component{
             mutation: CREATE_CONVERSATION_QUERY,
             variables: {
                 userIds: newIds,
-                title: "new Conversation"
+                title: this.state.title
             }
         }).then(data => {
-            console.log(this);
-            console.log(this.props);
+            data.data.createConversation.messages = [];
             this.props.addConversation(this.state.client, data);
         }).catch(err => {
             console.log(err);
@@ -122,7 +121,15 @@ class newConversationModal extends Component{
                         getOptionLabel={option => option.username}
                         style={{ width: 'auto', marginTop: 10 }}
                         renderInput={params => (
-                            <TextField {...params}  variant="standard" fullWidth onChange={this.handleInputChange} />
+                            <TextField
+                                {...params}
+                                variant="standard"
+                                fullWidth onChange={this.handleInputChange}
+                                label={"Participants"}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
                         )}
                     />
                     <div style={{ marginTop: 5}}>

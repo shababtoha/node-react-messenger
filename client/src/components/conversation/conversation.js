@@ -44,6 +44,7 @@ class Conversation extends Component {
                  getConversations: [newConversation.data.createConversation, ...getConversations]
             }
         });
+        this.conversationStateChange();
     }
 
     render() {

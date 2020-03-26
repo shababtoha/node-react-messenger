@@ -4,20 +4,7 @@ const User = require('../../models').user;
 const Message = require('../../models').message;
 const Sequelize = require('../../models').sequelize;
 
-const Op = require("sequelize").Op;
 
-function getConversation(id) {
-    return Conversation.findByPk(id, {
-        include: [{
-            model: Participant,
-            include: [
-                {
-                    model: User
-                }
-            ]
-        }]
-    });
-}
 
 module.exports = {
     getConversations: (userId) => {
@@ -45,7 +32,18 @@ module.exports = {
         })
     },
 
-    getConversation,
+    getConversation: (conversationId) => {
+        return Conversation.findByPk(conversationId, {
+            include: [{
+                model: Participant,
+                include: [
+                    {
+                        model: User
+                    }
+                ]
+            }]
+        });
+    },
 
     createConversation: (userIds, title) => {
         return Sequelize.transaction(t => {
