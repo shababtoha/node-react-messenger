@@ -1,4 +1,22 @@
-/.idea/
-/server/.idea/
-/client/.idea/
-/server/node_modules/
+.env
+
+# dependencies
+node_modules
+
+# config
+/server/config/config.json
+
+# testing
+coverage
+
+# production
+build
+.netlify
+
+# misc
+.DS_Store
+npm-debug.log
+
+#IDE
+.idea/*
+*.swp
