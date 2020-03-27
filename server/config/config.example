@@ -1,8 +1,8 @@
 {
   "development": {
-    "username": "shabab",
-    "password": "iambatman",
-    "database": "edify",
+    "username": "",
+    "password": "",
+    "database": "messenger",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
