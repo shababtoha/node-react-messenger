@@ -10,7 +10,14 @@ import {
 
 const RenderMessage = (props) => {
     return (
-        <Query query={GET_MESSAGE_QUERY} variables={{ conversationId: props.conversationId }}>
+        <Query
+            query={GET_MESSAGE_QUERY}
+            variables={{
+                conversationId: props.conversationId,
+                offset: 0,
+                limit: 10
+            }}
+        >
             {({loading, error, data}) => {
                 if(loading) return <p>loading</p>;
                 if(error) {

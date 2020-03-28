@@ -2,7 +2,7 @@ const { gql } = require('apollo-server');
 
 const  typeDefs = gql`
     extend type Query {
-        getMessages(conversationId: String!): [Message]!
+        getMessages(conversationId: String!, offset: Int, limit: Int): [Message]!
     }
     
     extend type Mutation {

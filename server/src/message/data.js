@@ -2,7 +2,7 @@ const Message = require('../../models').message;
 const user = require('../../models').user;
 
 module.exports = {
-    getMessages: (conversationId) => {
+    getMessages: (conversationId, offset, limit) => {
         return Message.findAll({
             where: {
                 "conversationId": conversationId
@@ -14,7 +14,9 @@ module.exports = {
                 {
                     model: user
                 }
-            ]
+            ],
+            offset,
+            limit
         });
     },
 
