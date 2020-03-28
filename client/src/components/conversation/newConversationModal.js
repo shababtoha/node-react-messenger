@@ -17,7 +17,6 @@ class newConversationModal extends Component{
             placeHolder: "",
             conversationIds: []
         };
-        console.log(props);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleNewConversationId = this.handleNewConversationId.bind(this);
         this.createConversation = this.createConversation.bind(this);
