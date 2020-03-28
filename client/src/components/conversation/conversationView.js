@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Toolbar from '../presentational/toolbar';
 import ConversationSearch from '../presentational/conversationSearch';
 import SettingsIcon from '@material-ui/icons/Settings';
 import AddIcons from '@material-ui/icons/AddCircle';
-import { withStyles } from '@material-ui/core/styles/index';
+import { makeStyles } from '@material-ui/core/styles/index';
 import IconButton from '@material-ui/core/IconButton';
-
+import Menu from './Menu';
 
 const styles =  theme => ({
     container: {
@@ -14,23 +14,37 @@ const styles =  theme => ({
         height: '100vh',
     },
 });
-{/*<IconButton*/}
-{/*    <SettingsIcon color="primary" style={{ fontSize: 25 }}/>*/}
-{/*</IconButton>*/}
+const useStyles = makeStyles(styles);
 
-const conversationView = (props) => {
-    const {classes} = props;
+const ConversationView = props => {
+    const classes = useStyles();
+    const [anchor, setAnchor] = useState(null);
+
+    const handleSettingsClick = event => {
+        setAnchor(event.currentTarget);
+    }
+
+    const handleMenuClose = () => {
+        setAnchor(null);
+    }
+
     let leftIcons = [
-        <IconButton>
-            <SettingsIcon color="primary" style={{ fontSize: 25 }}/>
-        </IconButton>
-    ];
-    let rightIcons = [
-        <IconButton onClick={props.addConversationButtonClick}>
-            <AddIcons color="primary"
-                      style={{ fontSize: 25 }}
+        <React.Fragment>
+            <IconButton onClick={handleSettingsClick}>
+                <SettingsIcon color="primary" style={{ fontSize: 25 }}/>
+            </IconButton>
+            <Menu
+                anchor={anchor}
+                handleClose={handleMenuClose}
             />
-        </IconButton>
+        </React.Fragment>
+        ];
+        let rightIcons = [
+            <IconButton onClick={props.addConversationButtonClick}>
+                <AddIcons color="primary"
+                        style={{ fontSize: 25 }}
+                />
+            </IconButton>
     ];
     let leftItems = leftIcons.map((item,key) => <span key={key} > {item} </span>  );
     let rightItems = rightIcons.map((item,key) => <span key={key} > {item} </span> );
@@ -51,4 +65,4 @@ const conversationView = (props) => {
     )
 };
 
-export default withStyles(styles)(conversationView);
+export default ConversationView;

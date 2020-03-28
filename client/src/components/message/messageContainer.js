@@ -45,7 +45,6 @@ class MessageContainer extends Component {
             user: this.props.user,
             message: "",
         };
-        console.log(props);
         this.handleInputChange = this.handleInputChange.bind(this);
     }
 
