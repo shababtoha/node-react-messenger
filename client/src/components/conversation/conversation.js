@@ -3,8 +3,7 @@ import ConversationView from './conversationView';
 import ConversationComponent from '../presentational/conversation';
 import { Query } from "react-apollo";
 import { CONVERSATION_QUERY } from './queries'
-import { withRouter } from "react-router-dom";
-import { Redirect } from 'react-router-dom'
+import { withRouter, Redirect } from "react-router-dom";
 import ConversationModal from './newConversationModal';
 
 
@@ -48,7 +47,6 @@ class Conversation extends Component {
     }
 
     render() {
-        console.log( typeof this.state.conversationId);
         return (
             <Fragment>
                 { this.state.newConversation &&
@@ -77,7 +75,6 @@ class Conversation extends Component {
                         //this.props.history.push('/message/'+  this.state.conversationId);
                         return <Redirect to={'/message/'+this.state.conversationId } />
                     }
-                    console.log(data.getConversations);
                     const conversation = data.getConversations.map((item,key)=>{
                         return <ConversationComponent
                             key={key}

@@ -35,7 +35,6 @@ module.exports = {
             subscribe: withFilter(
                 ()=> pubsub.asyncIterator(MESSAGE_ADDED),
                 (payload, variables, context) => {
-                    console.log(JSON.stringify(payload.users));
                     //console.log(context);
                     const user = payload.users.find( item => item.userId === context.id );
                     return !!user;
