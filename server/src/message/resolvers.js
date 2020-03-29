@@ -7,10 +7,11 @@ const MESSAGE_ADDED = 'MESSAGE_ADDED';
 
 module.exports = {
     Query: {
-        getMessages: (_, {conversationId}, context) => {
+        getMessages: (_, {conversationId, offset, limit}, context) => {
             if (!context.id)
                 throw new AuthenticationError("User Credentials has not provided");
-            return Message.getMessages(conversationId);
+            console.log(offset, limit);
+            return Message.getMessages(conversationId, offset, limit);
         }
     },
     Mutation: {

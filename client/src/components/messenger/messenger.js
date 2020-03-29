@@ -12,19 +12,23 @@ import { ApolloConsumer } from 'react-apollo/lib/index';
 import  {GET_MESSAGE_QUERY} from '../message/queries'
 
 function  updateConversation  (client, data) {
-    //console.log(data.messageAdded)
+    console.log("insubscriptions");
     let conversationId = data.messageAdded.conversationId;
     let queryData = client.readQuery({
         query : GET_MESSAGE_QUERY,
         variables: {
-            conversationId
+            conversationId,
+            offset: 0,
+            limit: 20
         }
     });
 
     client.writeQuery({
         query: GET_MESSAGE_QUERY,
         variables: {
-            conversationId
+            conversationId,
+            offset: 0,
+            limit: 20
         },
         data: {
             getMessages : [data.messageAdded,...queryData.getMessages]
