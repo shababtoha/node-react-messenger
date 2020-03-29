@@ -15,10 +15,10 @@ const RenderMessage = (props) => {
             variables={{
                 conversationId: props.conversationId,
                 offset: 0,
-                limit: 10
+                limit: 20
             }}
         >
-            {({loading, error, data}) => {
+            {({loading, error, data, fetchMore}) => {
                 if(loading) return <p>loading</p>;
                 if(error) {
                     return <p>error</p>
@@ -31,12 +31,22 @@ const RenderMessage = (props) => {
                     />
                 });
                 return <MessageContainerView
-                        title={props.title}
                         messages={messages}
                         onChange={props.handleInputChange}
                         value={props.value}
                         conversationId={props.conversationId }
                         title={props.title}
+                        onLoadMore={() => fetchMore({
+                            variables: {
+                                offset: data.getMessages.length
+                            },
+                            updateQuery: (prev, { fetchMoreResult }) => {
+                                if (!fetchMoreResult) return prev;
+                                return Object.assign({}, prev, {
+                                    getMessages: [...prev.getMessages, ...fetchMoreResult.getMessages]
+                                });
+                            }
+                        })}
                     />
             }}
         </Query>
