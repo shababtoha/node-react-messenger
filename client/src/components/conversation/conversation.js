@@ -1,10 +1,39 @@
 import React, { Component, Fragment } from 'react';
 import ConversationView from './conversationView';
 import ConversationComponent from '../presentational/conversation';
-import { Query } from "react-apollo";
+import { Query, withApollo } from "react-apollo";
 import { CONVERSATION_QUERY } from './queries'
 import { withRouter, Redirect } from "react-router-dom";
 import ConversationModal from './newConversationModal';
+import {GET_MESSAGE_QUERY} from "../message/queries";
+import {MESSAGE_SUBSCRIPTION} from "./queries";
+
+//@TODO : Refactor this function
+function updateConversation  (client, data) {
+    console.log("insubscriptions");
+    let conversationId = data.messageAdded.conversationId;
+    let queryData = client.readQuery({
+        query : GET_MESSAGE_QUERY,
+        variables: {
+            conversationId,
+            offset: 0,
+            limit: 20
+        }
+    });
+
+    client.writeQuery({
+        query: GET_MESSAGE_QUERY,
+        variables: {
+            conversationId,
+            offset: 0,
+            limit: 20
+        },
+        data: {
+            getMessages : [data.messageAdded,...queryData.getMessages]
+        }
+    });
+
+}
 
 
 
@@ -44,6 +73,27 @@ class Conversation extends Component {
             }
         });
         this.conversationStateChange();
+    }
+
+    componentDidMount() {
+        //subscribing for new message
+        let unsubscribeMessage = this.props.subscribeToNewMessage({
+            document: MESSAGE_SUBSCRIPTION,
+            updateQuery: (prev, { subscriptionData }) => {
+                if (!subscriptionData.data) return prev;
+                updateConversation(this.props.client, subscriptionData.data)
+            }
+        });
+        this.setState({
+            unsubscribeMessage
+        })
+    }
+
+    componentWillUnmount() {
+        //un-subscribing the subscription
+        if(this.state.unsubscribeMessage) {
+            this.state.unsubscribeMessage();
+        }
     }
 
     render() {
@@ -100,4 +150,4 @@ class Conversation extends Component {
     }
 }
 
-export default withRouter(Conversation);
+export default withApollo(withRouter(Conversation));
