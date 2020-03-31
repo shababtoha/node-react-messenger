@@ -59,11 +59,11 @@ class newConversationModal extends Component{
         this.setState({
             conversationIds
         });
-        console.log(this.state)
+        console.log('autocomplete', this.state)
     }
 
     createConversation() {
-        if(!this.state.conversationIds) {
+        if(!this.state.conversationIds || !this.state.conversationIds.length) {
             return;
         }
         let newIds = this.state.conversationIds.map(item => item.id);
@@ -83,7 +83,7 @@ class newConversationModal extends Component{
     }
 
     getTitlePlaceholder() {
-        if(this.state.title || this.state.conversationIds.length == 0 ) {
+        if(this.state.title || !this.state.conversationIds.length ) {
             return "";
         }
         let placeHolder = "You";

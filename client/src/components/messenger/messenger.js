@@ -10,6 +10,7 @@ import { Redirect } from 'react-router-dom'
 import {MESSAGE_SUBSCRIPTION} from "./queries";
 import { ApolloConsumer } from 'react-apollo/lib/index';
 import  {GET_MESSAGE_QUERY} from '../message/queries'
+import { UserProvider } from '../../contexts/UserContext';
 
 function  updateConversation  (client, data) {
     //console.log(data.messageAdded)
@@ -66,22 +67,24 @@ const messenger  = (props)=> {
                     }
                     const user = data.user;
                     return (
-                        <div className={classes.container}>
-                            {/*<div className={classes.toolbar}/>*/}
-                            <div className={classes.messenger} >
-                                <div className={classes.conversation}>
-                                    <Conversation/>
-                                </div>
-                                <div className={classes.message}>
-                                    <MessageContainer user={user} />
+                        <UserProvider value={user}>
+                            <div className={classes.container}>
+                                {/*<div className={classes.toolbar}/>*/}
+                                <div className={classes.messenger} >
+                                    <div className={classes.conversation}>
+                                        <Conversation/>
+                                    </div>
+                                    <div className={classes.message}>
+                                        <MessageContainer user={user} />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    )
+                        </UserProvider>
+                    );
                 }}
             </Query>
         </Fragment>
-    )
+    );
 };
 
 export default withRouter(withStyles(styles)(messenger));

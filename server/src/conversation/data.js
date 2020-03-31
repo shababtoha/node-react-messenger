@@ -46,6 +46,7 @@ module.exports = {
     },
 
     createConversation: (userIds, title) => {
+        console.log('----------', userIds);
         return Sequelize.transaction(t => {
             return Conversation.create({title}, {transaction: t})
                 .then(conversation => {
