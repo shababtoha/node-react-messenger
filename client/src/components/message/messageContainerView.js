@@ -1,4 +1,4 @@
-import React  from 'react';
+import React, {Component}  from 'react';
 import Toolbar from '../presentational/toolbar'
 import PhoneIcon from '@material-ui/icons/Phone';
 import VideoIcon from '@material-ui/icons/Videocam'
@@ -33,6 +33,14 @@ const styles = theme => ({
     },
 });
 
+
+function onMessageContainerDivScroll(loadMoreMessage) {
+    let messageDiv = document.getElementById("messageContainer");
+    if(messageDiv.scrollTop === 0) {
+        loadMoreMessage();
+    }
+}
+
 const messageContainer = (props) => {
     const {classes} = props;
     let rightIcons = [
@@ -51,7 +59,11 @@ const messageContainer = (props) => {
                 title={ props.title? props.title : "Conversation Title" }
                 rightItems = {rightItems}
             />
-            <div className={classes.messages}>
+            <div
+                className={classes.messages}
+                id="messageContainer"
+                onScroll={()=> onMessageContainerDivScroll(props.onLoadMore)}
+            >
                 {props.messages}
                 <div style={{ margin : "5px 5px"}} />
             </div>
