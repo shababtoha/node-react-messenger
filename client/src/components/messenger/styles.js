@@ -7,6 +7,7 @@ export const styles =  theme => ({
     },
     conversation : {
         minWidth : 350,
+        width: '30%',
         borderRight : '1px solid #B0B3AF',
         overflow: 'hidden',
         height : '100%',

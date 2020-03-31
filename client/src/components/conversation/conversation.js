@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import ConversationView from './conversationView';
 import ConversationComponent from '../presentational/conversation';
 import { Query, withApollo } from "react-apollo";
@@ -7,6 +7,7 @@ import { withRouter, Redirect } from "react-router-dom";
 import ConversationModal from './newConversationModal';
 import {GET_MESSAGE_QUERY} from "../message/queries";
 import {MESSAGE_SUBSCRIPTION} from "./queries";
+import conversationIcon from '../../assets/conversation-icon.png'
 
 //@TODO : Refactor this function
 function updateConversation  (client, data) {
@@ -35,34 +36,35 @@ function updateConversation  (client, data) {
 
 }
 
+const Conversation = props => {
+    const [conversationId, setConversationId] = useState(props.match.params.id);
+    const [modalOpen, setModalOpen] = useState(false);
 
+    useEffect(() => {
+        // called only once after render
+        let unsubscribe = props.subscribeToNewMessage({
+            document: MESSAGE_SUBSCRIPTION,
+            updateQuery: (prev, { subscriptionData }) => {
+                if (!subscriptionData.data) return prev;
+                updateConversation(this.props.client, subscriptionData.data)
+            }
+        });
 
-class Conversation extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            errors: {
+        // function to be called before unmounting
+        return () => {
+            unsubscribe();
+        }
+    }, []);
 
-            },
-            conversationId: props.match.params.id,
-            newConversation: false
-        };
-        this.addConversation = this.addConversation.bind(this);
-        this.conversationStateChange = this.conversationStateChange.bind(this);
-        this.changeConversation = this.changeConversation.bind(this);
-    }
+    const changeConversation = conversationId => {
+        props.history.push(`/message/${conversationId}`)
+    };
 
-    changeConversation(conversationId) {
-        this.props.history.push('/message/'+conversationId);
-    }
+    const changeModalOpenState = () => {
+        setModalOpen(open => !open);
+    };
 
-    conversationStateChange() {
-        this.setState({
-            newConversation: !this.state.newConversation
-        })
-    }
-
-    addConversation(client, newConversation) {
+    const addConversation = (client, newConversation) => {
         let {getConversations} = client.readQuery({
             query: CONVERSATION_QUERY
         });
@@ -72,40 +74,18 @@ class Conversation extends Component {
                  getConversations: [newConversation.data.createConversation, ...getConversations]
             }
         });
-        this.conversationStateChange();
-    }
+        changeModalOpenState();
+    };
 
-    componentDidMount() {
-        //subscribing for new message
-        let unsubscribeMessage = this.props.subscribeToNewMessage({
-            document: MESSAGE_SUBSCRIPTION,
-            updateQuery: (prev, { subscriptionData }) => {
-                if (!subscriptionData.data) return prev;
-                updateConversation(this.props.client, subscriptionData.data)
+    return (
+        <Fragment>
+            { modalOpen &&
+                <ConversationModal
+                    addConversation={addConversation}
+                    onCancel={changeModalOpenState}
+                />
             }
-        });
-        this.setState({
-            unsubscribeMessage
-        })
-    }
-
-    componentWillUnmount() {
-        //un-subscribing the subscription
-        if(this.state.unsubscribeMessage) {
-            this.state.unsubscribeMessage();
-        }
-    }
-
-    render() {
-        return (
-            <Fragment>
-                { this.state.newConversation &&
-                    <ConversationModal
-                        addConversation={this.addConversation}
-                        onCancel={this.conversationStateChange}
-                    />
-                }
-                <Query query={CONVERSATION_QUERY}>
+            <Query query={CONVERSATION_QUERY}>
                 {({ loading, error, data }) => {
                     if(loading) return <div> loading </div>;
                     if(error) {
@@ -113,41 +93,36 @@ class Conversation extends Component {
                         return  error.graphQLErrors.map(({ message }, i) => {
                             if (message === "Authentication Credentials was not provided") {
                                 localStorage.removeItem("authToken");
-                                //this.props.history.push('/login');
-                                return <Redirect to={'/login'+this.state.conversationId } />
+                                return <Redirect to={`/login/${conversationId}`} />
                             } else {
                                 return <p> error </p>
                             }
                         });
                     }
-                    if(this.state.conversationId === undefined &&  data.getConversations && data.getConversations.length > 0) {
-                        this.state.conversationId =  data.getConversations[0].id;
-                        //this.props.history.push('/message/'+  this.state.conversationId);
-                        return <Redirect to={'/message/'+this.state.conversationId } />
+                    if(conversationId === undefined &&  data.getConversations && data.getConversations.length) {
+                        setConversationId(data.getConversations[0].id);
+                        return <Redirect to={`/message/${data.getConversations[0].id}`} />
                     }
-                    const conversation = data.getConversations.map((item,key)=>{
+                    const conversation = data.getConversations.map((item, key) => {
                         return <ConversationComponent
                             key={key}
-                            avatar="http://maestroselectronics.com/wp-content/uploads/bfi_thumb/blank-user-355ba8nijgtrgca9vdzuv4.jpg"
+                            avatar={conversationIcon}
                             title={item.title}
-                            text={ item.messages.length > 0 ?
-                                    item.messages[0].message : ""
-                            }
+                            text={ item.messages.length ? item.messages[0].message : "" }
                             conversationId={item.id}
-                            onClick={this.changeConversation}
+                            onClick={changeConversation}
                         />
                     });
                     return (
                         <ConversationView
                             conversation={conversation}
-                            addConversationButtonClick={this.conversationStateChange}
+                            addConversationButtonClick={changeModalOpenState}
                         />
                     );
                 }}
-                </Query>
-            </Fragment>
-        )
-    }
-}
+            </Query>
+        </Fragment>
+    );
+};
 
 export default withApollo(withRouter(Conversation));
