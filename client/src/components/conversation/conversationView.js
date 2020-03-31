@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Toolbar from '../presentational/toolbar';
 import ConversationSearch from '../presentational/conversationSearch';
+import ConversationComponent from '../presentational/conversation';
 import SettingsIcon from '@material-ui/icons/Settings';
 import AddIcons from '@material-ui/icons/AddCircle';
 import { makeStyles } from '@material-ui/core/styles/index';
@@ -8,6 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
 import Menu from './Menu';
 import avatar from '../../assets/avatar.jpg';
+import conversationIcon from '../../assets/conversation-icon.png';
 
 const styles =  theme => ({
     container: {
@@ -19,6 +21,9 @@ const styles =  theme => ({
         width: 40,
         height: 40
     },
+    conversationWrapper: {
+        overflowY: 'scroll'
+    }
 });
 const useStyles = makeStyles(styles);
 
@@ -67,8 +72,19 @@ const ConversationView = props => {
                 rightItems = {rightItems}
             />
             <ConversationSearch  />
-            <div style={{ overflowY : "scroll" }}>
-                {props.conversation}
+            <div className={classes.conversationWrapper}>
+                {
+                    props.conversations.map((item, key) => (
+                        <ConversationComponent
+                            key={key}
+                            avatar={conversationIcon}
+                            title={item.title}
+                            text={ item.messages.length ? item.messages[0].message : "" }
+                            conversationId={item.id}
+                            onClick={props.onConversationChange}
+                        />
+                    ))
+                }
             </div>
         </div>
     )

@@ -1,17 +1,15 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import ConversationView from './conversationView';
-import ConversationComponent from '../presentational/conversation';
 import { Query, withApollo } from "react-apollo";
-import { CONVERSATION_QUERY } from './queries'
 import { withRouter, Redirect } from "react-router-dom";
+import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import ConversationModal from './newConversationModal';
+import ConversationView from './conversationView';
+import { MESSAGE_SUBSCRIPTION, CONVERSATION_QUERY } from './queries'
 import {GET_MESSAGE_QUERY} from "../message/queries";
-import {MESSAGE_SUBSCRIPTION} from "./queries";
-import conversationIcon from '../../assets/conversation-icon.png'
 
 //@TODO : Refactor this function
 function updateConversation  (client, data) {
-    console.log("insubscriptions");
     let conversationId = data.messageAdded.conversationId;
     let queryData = client.readQuery({
         query : GET_MESSAGE_QUERY,
@@ -33,12 +31,21 @@ function updateConversation  (client, data) {
             getMessages : [data.messageAdded,...queryData.getMessages]
         }
     });
-
 }
+
+const styles = theme => ({
+    loader: {
+        position: 'relative',
+        top: '45%',
+        left: '42%'
+    }
+});
+const useStyles = makeStyles(styles);
 
 const Conversation = props => {
     const [conversationId, setConversationId] = useState(props.match.params.id);
     const [modalOpen, setModalOpen] = useState(false);
+    const classes = useStyles();
 
     useEffect(() => {
         // called only once after render
@@ -46,7 +53,7 @@ const Conversation = props => {
             document: MESSAGE_SUBSCRIPTION,
             updateQuery: (prev, { subscriptionData }) => {
                 if (!subscriptionData.data) return prev;
-                updateConversation(this.props.client, subscriptionData.data)
+                updateConversation(props.client, subscriptionData.data)
             }
         });
 
@@ -87,7 +94,8 @@ const Conversation = props => {
             }
             <Query query={CONVERSATION_QUERY}>
                 {({ loading, error, data }) => {
-                    if(loading) return <div> loading </div>;
+                    if(loading)
+                        return <CircularProgress className={classes.loader} size={50} />;
                     if(error) {
                         console.log(error);
                         return  error.graphQLErrors.map(({ message }, i) => {
@@ -103,19 +111,10 @@ const Conversation = props => {
                         setConversationId(data.getConversations[0].id);
                         return <Redirect to={`/message/${data.getConversations[0].id}`} />
                     }
-                    const conversation = data.getConversations.map((item, key) => {
-                        return <ConversationComponent
-                            key={key}
-                            avatar={conversationIcon}
-                            title={item.title}
-                            text={ item.messages.length ? item.messages[0].message : "" }
-                            conversationId={item.id}
-                            onClick={changeConversation}
-                        />
-                    });
                     return (
                         <ConversationView
-                            conversation={conversation}
+                            conversations={data.getConversations}
+                            onConversationChange={changeConversation}
                             addConversationButtonClick={changeModalOpenState}
                         />
                     );
