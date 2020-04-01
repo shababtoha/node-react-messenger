@@ -1,4 +1,4 @@
-export const styles =  theme => ({
+const styles = theme => ({
     container : {
         display : 'flex',
         flexDirection : 'column',
@@ -27,6 +27,7 @@ export const styles =  theme => ({
         width: '100%',
         overflow : 'hidden',
         height : '100%',
-    },
-    toolbar : theme.mixins.toolbar
+    }
 });
+
+export default styles;

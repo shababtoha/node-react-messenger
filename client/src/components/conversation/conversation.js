@@ -1,127 +1,59 @@
-import React, { Fragment, useState, useEffect } from 'react';
-import { Query, withApollo } from "react-apollo";
-import { withRouter, Redirect } from "react-router-dom";
+import React from 'react';
+import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import ConversationModal from './newConversationModal';
-import ConversationView from './conversationView';
-import { MESSAGE_SUBSCRIPTION, CONVERSATION_QUERY } from './queries'
-import {GET_MESSAGE_QUERY} from "../message/queries";
-
-//@TODO : Refactor this function
-function updateConversation  (client, data) {
-    let conversationId = data.messageAdded.conversationId;
-    let queryData = client.readQuery({
-        query : GET_MESSAGE_QUERY,
-        variables: {
-            conversationId,
-            offset: 0,
-            limit: 20
-        }
-    });
-
-    client.writeQuery({
-        query: GET_MESSAGE_QUERY,
-        variables: {
-            conversationId,
-            offset: 0,
-            limit: 20
-        },
-        data: {
-            getMessages : [data.messageAdded,...queryData.getMessages]
-        }
-    });
-}
 
 const styles = theme => ({
-    loader: {
-        position: 'relative',
-        top: '45%',
-        left: '42%'
+    container : {
+        padding: 10,
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        cursor: "pointer",
+        '&:hover' : {
+            background: "#eeeef1",
+        }
+    },
+    avatar: {
+        height : 50,
+        width : 50,
+        marginRight : 10
+    },
+    textWrapper: {
+        width: 250
+    },
+    title: {
+        textTransform : "capitalize",
+        fontSize: 16,
+        margin : 0,
+    },
+    text: {
+        color: "#888",
+        margin : 0,
+        fontSize: 13,
     }
 });
 const useStyles = makeStyles(styles);
 
-const Conversation = props => {
-    const [conversationId, setConversationId] = useState(props.match.params.id);
-    const [modalOpen, setModalOpen] = useState(false);
+const Conversation = (props) => {
     const classes = useStyles();
-
-    useEffect(() => {
-        // called only once after render
-        let unsubscribe = props.subscribeToNewMessage({
-            document: MESSAGE_SUBSCRIPTION,
-            updateQuery: (prev, { subscriptionData }) => {
-                if (!subscriptionData.data) return prev;
-                updateConversation(props.client, subscriptionData.data)
-            }
-        });
-
-        // function to be called before unmounting
-        return () => {
-            unsubscribe();
-        }
-    }, []);
-
-    const changeConversation = conversationId => {
-        props.history.push(`/message/${conversationId}`)
-    };
-
-    const changeModalOpenState = () => {
-        setModalOpen(open => !open);
-    };
-
-    const addConversation = (client, newConversation) => {
-        let {getConversations} = client.readQuery({
-            query: CONVERSATION_QUERY
-        });
-        client.writeQuery({
-            query: CONVERSATION_QUERY,
-            data: {
-                 getConversations: [newConversation.data.createConversation, ...getConversations]
-            }
-        });
-        changeModalOpenState();
-    };
-
+    
     return (
-        <Fragment>
-            { modalOpen &&
-                <ConversationModal
-                    addConversation={addConversation}
-                    onCancel={changeModalOpenState}
-                />
-            }
-            <Query query={CONVERSATION_QUERY}>
-                {({ loading, error, data }) => {
-                    if(loading)
-                        return <CircularProgress className={classes.loader} size={50} />;
-                    if(error) {
-                        console.log(error);
-                        return  error.graphQLErrors.map(({ message }, i) => {
-                            if (message === "Authentication Credentials was not provided") {
-                                localStorage.removeItem("authToken");
-                                return <Redirect to={`/login/${conversationId}`} />
-                            } else {
-                                return <p> error </p>
-                            }
-                        });
-                    }
-                    if(conversationId === undefined &&  data.getConversations && data.getConversations.length) {
-                        setConversationId(data.getConversations[0].id);
-                        return <Redirect to={`/message/${data.getConversations[0].id}`} />
-                    }
-                    return (
-                        <ConversationView
-                            conversations={data.getConversations}
-                            onConversationChange={changeConversation}
-                            addConversationButtonClick={changeModalOpenState}
-                        />
-                    );
-                }}
-            </Query>
-        </Fragment>
+        <div
+            className={classes.container}
+            onClick={()=> props.onClick(props.conversationId)}
+        >
+            <Avatar
+                className={classes.avatar}
+                src={props.avatar}
+                alt={props.avatar}
+            />
+            <div className={classes.textWrapper}>
+                <Typography noWrap className={classes.title} variant="h6"> { props.title } </Typography>
+                <Typography noWrap className={classes.text} variant="subtitle1" paragraph> { props.text } </Typography>
+            </div>
+        </div>
     );
 };
 
-export default withApollo(withRouter(Conversation));
+export default Conversation;

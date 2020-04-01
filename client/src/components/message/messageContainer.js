@@ -1,12 +1,23 @@
-import React, { Component, Fragment } from 'react';
+import React, { useState } from 'react';
+import { withRouter } from 'react-router-dom';
+import { Query } from "react-apollo";
+import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import MessageContainerView from './messageContainerView';
 import MessageComponent from '../presentational/message';
-import { withRouter } from "react-router-dom";
-import { Query } from "react-apollo";
 import {
     GET_MESSAGE_QUERY,
     GET_CONVERSATION_QUERY,
 }  from './queries'
+
+const styles = theme => ({
+    loader: {
+        position: 'relative',
+        top: '45%',
+        left: '43%'
+    }
+});
+const useStyles = makeStyles(styles);
 
 const RenderMessage = (props) => {
     return (
@@ -19,10 +30,8 @@ const RenderMessage = (props) => {
             }}
         >
             {({loading, error, data, fetchMore}) => {
-                if(loading) return <p>loading</p>;
-                if(error) {
-                    return <p>error</p>
-                }
+                if(loading) return null;
+                if(error)   return <p>error</p>;
                 const messages = data.getMessages.map((item, key)=>{
                     return <MessageComponent
                         me={item.user.username === props.username}
@@ -54,46 +63,32 @@ const RenderMessage = (props) => {
 };
 
 
-class MessageContainer extends Component {
+const MessageContainer = props => {
+    const [message, setMessage] = useState('');
+    const conversationId = props.match ? props.match.params.id : null;
+    const classes = useStyles();
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            user: this.props.user,
-            message: "",
-        };
-        this.handleInputChange = this.handleInputChange.bind(this);
-    }
-
-    handleInputChange(value) {
-            this.setState({
-                message: value,
-            });
-    }
-
-    render() {
-        const conversationId = this.props.match.params.id;
-        if(!conversationId) return null;
-        return (
-            <Fragment>
-                <Query query={GET_CONVERSATION_QUERY} variables={{ id: conversationId }} >
-                    {({loading, error, data}) => {
-                        if(loading) return <p> loading </p>;
-                        if(error) {
-                            return <p> error </p>
-                        }
-                        return <RenderMessage
-                            title={data.getConversation.title}
-                            conversationId={conversationId}
-                            username={this.state.user.username}
-                            handleInputChange={this.handleInputChange}
-                            value={this.state.message}
-                        />
-                    }}
-                </Query>
-            </Fragment>
+    return (
+        !conversationId ? null : (
+            <Query query={GET_CONVERSATION_QUERY} variables={{ id: conversationId }} >
+                {({loading, error, data}) => {
+                    if(loading)
+                        return <CircularProgress className={classes.loader} size={80} />;
+                    if(error) {
+                        return <p> error </p>
+                    }
+                    return <RenderMessage
+                        title={data.getConversation.title}
+                        conversationId={conversationId}
+                        username={props.user.username}
+                        handleInputChange={v => setMessage(v)}
+                        value={message}
+                    />
+                }}
+            </Query>
         )
-    }
-}
+    );
+
+};
 
 export default withRouter(MessageContainer);

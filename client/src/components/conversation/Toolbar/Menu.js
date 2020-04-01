@@ -5,8 +5,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import LockOpen from '@material-ui/icons/LockOpen';
-import history from '../../history';
-import UserContext from '../../contexts/UserContext';
+import history from '../../../history';
+import UserContext from '../../../contexts/UserContext';
 
 const MainMenu = props => {
   const user = useContext(UserContext);

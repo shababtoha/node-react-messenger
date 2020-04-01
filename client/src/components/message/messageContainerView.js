@@ -1,13 +1,9 @@
-import React, {Component}  from 'react';
-import Toolbar from '../presentational/toolbar'
-import PhoneIcon from '@material-ui/icons/Phone';
-import VideoIcon from '@material-ui/icons/Videocam'
-import TextField from "@material-ui/core/TextField/index";
-import { withStyles } from '@material-ui/core/styles/index';
+import React  from 'react';
 import { Mutation } from "react-apollo";
-import { CREATE_MESSAGE_QUERY , GET_MESSAGE_QUERY } from './queries';
-import IconButton from '@material-ui/core/IconButton';
-
+import TextField from '@material-ui/core/TextField';
+import { makeStyles } from '@material-ui/core/styles';
+import TopBar from './TopBar';
+import { CREATE_MESSAGE_QUERY } from './queries';
 
 const styles = theme => ({
     inputDiv : {
@@ -32,6 +28,7 @@ const styles = theme => ({
 
     },
 });
+const useStyles = makeStyles(styles);
 
 
 function onMessageContainerDivScroll(loadMoreMessage) {
@@ -41,23 +38,13 @@ function onMessageContainerDivScroll(loadMoreMessage) {
     }
 }
 
-const messageContainer = (props) => {
-    const {classes} = props;
-    let rightIcons = [
-        <IconButton>
-            <VideoIcon color="primary" style={{ fontSize: 25 }}/>
-        </IconButton>,
-        <IconButton>
-            <PhoneIcon color="primary" style={{ fontSize : 25 }}/>
-        </IconButton>
-        ,
-    ];
-    let rightItems = rightIcons.map((item,key)=> <span key={key}> {item} </span>);
+const MessageContainer = (props) => {
+    const classes = useStyles();
+    
     return (
         <div className={classes.container}>
-            <Toolbar
-                title={ props.title? props.title : "Conversation Title" }
-                rightItems = {rightItems}
+            <TopBar
+                title={props.title ? props.title : "Conversation Title"}
             />
             <div
                 className={classes.messages}
@@ -70,23 +57,6 @@ const messageContainer = (props) => {
             <div className={classes.inputDiv}>
                 <Mutation mutation={CREATE_MESSAGE_QUERY}
                     update={(cache, { data : { createMessage } }) => {
-                        // const { getMessages } =  cache.readQuery({
-                        //     query: GET_MESSAGE_QUERY,
-                        //     variables : {
-                        //         conversationId: props.conversationId
-                        //     }
-                        // });
-                        // console.log(cache.data.data);
-                        // cache.writeQuery({
-                        //     query: GET_MESSAGE_QUERY,
-                        //     variables : {
-                        //         conversationId: props.conversationId
-                        //     },
-                        //     data: {
-                        //         getMessages: [createMessage].concat(getMessages)
-                        //     }
-                        // });
-                        // console.log("cache" + cache);
                     }}
                 >
                     {(sendMessage) => (
@@ -120,4 +90,4 @@ const messageContainer = (props) => {
     )
 };
 
-export default withStyles(styles)(messageContainer);
+export default MessageContainer;
