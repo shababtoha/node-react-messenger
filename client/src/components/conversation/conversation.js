@@ -3,7 +3,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
     container : {
         padding: 10,
         display: "flex",
@@ -32,8 +32,7 @@ const styles = theme => ({
         margin : 0,
         fontSize: 13,
     }
-});
-const useStyles = makeStyles(styles);
+}));
 
 const Conversation = (props) => {
     const classes = useStyles();

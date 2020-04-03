@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import TopBar from './TopBar';
 import { CREATE_MESSAGE_QUERY } from './queries';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
     inputDiv : {
         borderTop : "1px solid #bbbbbf",
         paddingLeft : 5,
@@ -27,9 +27,7 @@ const styles = theme => ({
         height : '100vh',
 
     },
-});
-const useStyles = makeStyles(styles);
-
+}));
 
 function onMessageContainerDivScroll(loadMoreMessage) {
     let messageDiv = document.getElementById("messageContainer");

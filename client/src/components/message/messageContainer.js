@@ -10,14 +10,13 @@ import {
     GET_CONVERSATION_QUERY,
 }  from './queries'
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
     loader: {
         position: 'relative',
         top: '45%',
         left: '43%'
     }
-});
-const useStyles = makeStyles(styles);
+}));
 
 const RenderMessage = (props) => {
     return (
@@ -65,7 +64,7 @@ const RenderMessage = (props) => {
 
 const MessageContainer = props => {
     const [message, setMessage] = useState('');
-    const conversationId = props.match ? props.match.params.id : null;
+    const conversationId = props.match.params.id;
     const classes = useStyles();
 
     return (

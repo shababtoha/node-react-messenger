@@ -8,7 +8,7 @@ import Videocam from '@material-ui/icons/Videocam';
 import { makeStyles } from '@material-ui/core/styles';
 import avatar from '../../../assets/avatar.jpg';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   container: {
     boxShadow: '0 1px 2px #888'
   },
@@ -20,8 +20,7 @@ const styles = theme => ({
   title: {
     flex: 1,
   }
-});
-const useStyles = makeStyles(styles);
+}));
 
 const TopBar = props => {
   const classes = useStyles();
@@ -34,7 +33,7 @@ const TopBar = props => {
         alt={avatar}
       />
       <Typography className={classes.title} variant="h5">
-        Conversation Title
+        {props.title}
       </Typography>
       <IconButton color="primary">
         <Call />

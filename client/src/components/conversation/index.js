@@ -36,7 +36,7 @@ function updateConversation  (client, data) {
     });
 }
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
     loader: {
         position: 'relative',
         top: '45%',
@@ -54,8 +54,7 @@ const styles = theme => ({
     conversationWrapper: {
         overflowY: 'scroll'
     }
-});
-const useStyles = makeStyles(styles);
+}));
 
 const Conversation = props => {
     const [conversationId, setConversationId] = useState(props.match.params.id);
@@ -144,7 +143,6 @@ const Conversation = props => {
                                     data.getConversations.map((item, index) => (
                                         <ConversationComponent
 											key={index}
-											selected={item.id === conversationId}
                                             avatar={conversationIcon}
                                             title={item.title}
                                             text={ item.messages.length ? item.messages[0].message : "" }
