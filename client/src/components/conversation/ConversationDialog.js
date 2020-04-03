@@ -17,7 +17,7 @@ import UserContext from "../../contexts/UserContext";
 import history from '../../history';
 import { useDebounce } from "../../hooks/useDebounce";
 
-const NewConversationModal = props => {
+const ConversationDialog = props => {
   const [titleText, setTitleText] = useState("");
   const [participantText, setParticipantText] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -146,4 +146,4 @@ const NewConversationModal = props => {
   );
 };
 
-export default withApollo(NewConversationModal);
+export default withApollo(ConversationDialog);
