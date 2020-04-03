@@ -8,13 +8,14 @@ const {
 } = require('apollo-server');
 
 module.exports = {
-    getAll: (username) => {
+    getAll: (username, id) => {
         let condition = {};
         if(username) {
             condition = {
                 where: {
-                    username: {
-                        [Op.startsWith]: username
+                    [Op.and]: {
+                        id: { [Op.not]: id },
+                        username: { [Op.startsWith]: username }
                     }
                 }
             }

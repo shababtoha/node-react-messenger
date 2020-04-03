@@ -4,7 +4,7 @@ import { withRouter, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Toolbar from './Toolbar';
-import ConversationModal from './newConversationModal';
+import ConversationDialog from './ConversationDialog';
 import ConversationComponent from './conversation';
 import { MESSAGE_SUBSCRIPTION, CONVERSATION_QUERY } from './queries'
 import {GET_MESSAGE_QUERY} from "../message/queries";
@@ -107,9 +107,10 @@ const Conversation = props => {
     return (
         <>
             { modalOpen &&
-                <ConversationModal
+                <ConversationDialog
+                    open={modalOpen}
+                    onClose={changeModalOpenState}
                     addConversation={addConversation}
-                    onCancel={changeModalOpenState}
                 />
             }
             <Query query={CONVERSATION_QUERY}>
