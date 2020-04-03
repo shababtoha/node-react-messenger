@@ -47,8 +47,10 @@ class Login extends Component{
                 password: this.state.password
             }
         }).then(result => {
-            localStorage.setItem("authToken", result.data.login.token);
-            this.props.history.push('/message');
+            client.resetStore().then(()=>{
+                localStorage.setItem("authToken", result.data.login.token);
+                this.props.history.push('/message');
+            });
         }).catch(error => {
             console.log(error);
         });

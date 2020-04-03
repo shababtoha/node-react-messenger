@@ -3,8 +3,7 @@ const Participant = require('../../models').participant;
 const User = require('../../models').user;
 const Message = require('../../models').message;
 const Sequelize = require('../../models').sequelize;
-
-
+const { QueryTypes } = require('sequelize');
 
 module.exports = {
     getConversations: (userId) => {
@@ -46,7 +45,6 @@ module.exports = {
     },
 
     createConversation: (userIds, title) => {
-        console.log('----------', userIds);
         return Sequelize.transaction(t => {
             return Conversation.create({title}, {transaction: t})
                 .then(conversation => {
@@ -62,6 +60,20 @@ module.exports = {
         });
     },
 
+    getExistingConversation: (userIds) => {
+        return Sequelize.query(
+            'SELECT "conversationId" FROM participants ' +
+            'WHERE "userId" in (:userIds) '+
+            'group by "conversationId" ' +
+            'having count("conversationId") = :userCount',
+            {
+                replacements: { userIds: userIds, userCount: userIds.length },
+                type: QueryTypes.SELECT
+            }
+        );
+    },
+
+    //TODO : need to move it from here.
     getUsers: (conversationId) => {
         return Participant.findAll({
             attributes: ['userId'],
