@@ -24,6 +24,12 @@ export const GET_USERS_QUERY = gql`
     }
 `;
 
+export const CHECK_EXISTING_CONVERSATION_QUERY = gql`
+    query CheckExistingConversation($userIds: [String!]!) {
+        checkExistingConversation(userIds: $userIds)
+    }
+`
+
 export const CREATE_CONVERSATION_QUERY = gql`
     mutation CreateConversation($userIds: [String!]!, $title : String!) {
         createConversation(userIds: $userIds, title: $title) {
