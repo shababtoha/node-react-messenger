@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter, Redirect } from 'react-router-dom';
 import { Query } from "react-apollo";
 import { makeStyles } from '@material-ui/core/styles';
 import Conversation from '../conversation';
@@ -13,7 +14,7 @@ const Messenger  = props => {
     const classes = useStyles();
     const token = localStorage.getItem("authToken");
     if(!token) {
-        props.history.push('/login');
+        return <Redirect to="/login" />;
     }
     return (
         <Query query={GET_ME_QUERY}>
@@ -21,7 +22,7 @@ const Messenger  = props => {
                 if (loading)    return null;
                 if (error) {
                     console.log("GET ME ERROR "+ error);
-                    props.history.push('/login');
+                    return <Redirect to="/login" />;
                 }
                 const user = data.user;
                 return (
@@ -45,4 +46,4 @@ const Messenger  = props => {
     );
 };
 
-export default Messenger;
+export default withRouter(Messenger);

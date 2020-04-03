@@ -15,7 +15,7 @@ const styles = theme => ({
     background: '#E3E6E8',
     position: 'relative',
     width: '85%',
-    margin: 'auto',
+    margin: '0 auto',
     display: 'flex',
     alignItems: 'center',
     borderRadius: '17px'

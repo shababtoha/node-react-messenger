@@ -7,7 +7,7 @@ module.exports = {
             if(!context.id) {
                 throw new AuthenticationError("User Credentials has not provided");
             }
-            return User.getAll(username);
+            return User.getAll(username, context.id);
         },
         user: (_,{id}, context) => {
             if(!context.id) {

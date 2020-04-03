@@ -4,7 +4,7 @@ import { withRouter, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Toolbar from './Toolbar';
-import ConversationModal from './newConversationModal';
+import ConversationDialog from './ConversationDialog';
 import ConversationComponent from './conversation';
 import { MESSAGE_SUBSCRIPTION, CONVERSATION_QUERY } from './queries'
 import {GET_MESSAGE_QUERY} from "../message/queries";
@@ -36,7 +36,7 @@ function updateConversation  (client, data) {
     });
 }
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
     loader: {
         position: 'relative',
         top: '45%',
@@ -54,8 +54,7 @@ const styles = theme => ({
     conversationWrapper: {
         overflowY: 'scroll'
     }
-});
-const useStyles = makeStyles(styles);
+}));
 
 const Conversation = props => {
     const [conversationId, setConversationId] = useState(props.match.params.id);
@@ -108,9 +107,10 @@ const Conversation = props => {
     return (
         <>
             { modalOpen &&
-                <ConversationModal
+                <ConversationDialog
+                    open={modalOpen}
+                    onClose={changeModalOpenState}
                     addConversation={addConversation}
-                    onCancel={changeModalOpenState}
                 />
             }
             <Query query={CONVERSATION_QUERY}>
@@ -144,7 +144,6 @@ const Conversation = props => {
                                     data.getConversations.map((item, index) => (
                                         <ConversationComponent
 											key={index}
-											selected={item.id === conversationId}
                                             avatar={conversationIcon}
                                             title={item.title}
                                             text={ item.messages.length ? item.messages[0].message : "" }
