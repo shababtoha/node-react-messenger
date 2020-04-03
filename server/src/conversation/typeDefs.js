@@ -4,6 +4,7 @@ const typeDefs = gql`
     extend type Query {
         getConversations: [Conversation]!
         getConversation(id: String!): Conversation
+        checkExistingConversation(userIds: [String!]!): String
     }
     
      extend type Mutation {

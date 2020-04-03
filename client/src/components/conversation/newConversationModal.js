@@ -3,7 +3,12 @@ import { ModalContainer, Modal } from './styles';
 import { Autocomplete } from '@material-ui/lab';
 import TextField from "@material-ui/core/TextField";
 import { withApollo } from 'react-apollo';
-import { GET_USERS_QUERY , CREATE_CONVERSATION_QUERY} from './queries'
+import { withRouter } from "react-router-dom";
+import {
+    GET_USERS_QUERY ,
+    CREATE_CONVERSATION_QUERY,
+    CHECK_EXISTING_CONVERSATION_QUERY
+} from './queries'
 import { Button } from '@material-ui/core';
 
 class newConversationModal extends Component{
@@ -22,6 +27,7 @@ class newConversationModal extends Component{
         this.createConversation = this.createConversation.bind(this);
         this.handleTitleInputChange = this.handleTitleInputChange.bind(this);
         this.getTitlePlaceholder = this.getTitlePlaceholder.bind(this);
+        this.checkExistingConversation = this.checkExistingConversation.bind(this);
     }
 
 
@@ -82,6 +88,29 @@ class newConversationModal extends Component{
         })
     }
 
+    checkExistingConversation() {
+        if(!this.state.conversationIds || !this.state.conversationIds.length) {
+            return;
+        }
+        let newIds = this.state.conversationIds.map(item => item.id);
+        this.state.client.query({
+            query: CHECK_EXISTING_CONVERSATION_QUERY,
+            variables: {
+                userIds: newIds,
+            }
+        }).then(data => {
+            console.log(data);
+            if(data.data.checkExistingConversation) {
+                console.log("redirecting");
+                this.props.onCancel();
+                this.props.history.push('/message'+ data.data.checkExistingConversation);
+            }
+        }).catch(error => {
+            console.log(error);
+        })
+    }
+
+
     getTitlePlaceholder() {
         if(this.state.title || !this.state.conversationIds.length ) {
             return "";
@@ -137,7 +166,7 @@ class newConversationModal extends Component{
                             size="medium"
                             color="primary"
                             style={{ display: 'inlineBlock' }}
-                            onClick={()=> this.createConversation()}
+                            onClick={()=> this.checkExistingConversation()}
                         >
                             Start Conversation
                         </Button>
@@ -157,4 +186,4 @@ class newConversationModal extends Component{
     }
 }
 
-export default withApollo(newConversationModal);
+export default withApollo(withRouter(newConversationModal));
