@@ -7,12 +7,12 @@ import Toolbar from './Toolbar';
 import ConversationDialog from './ConversationDialog';
 import ConversationComponent from './conversation';
 import { MESSAGE_SUBSCRIPTION, CONVERSATION_QUERY } from './queries'
-import {GET_MESSAGE_QUERY} from "../message/queries";
+import {GET_CONVERSATION_QUERY, GET_MESSAGE_QUERY} from "../message/queries";
 import { useDebounce } from '../../hooks/useDebounce';
 import conversationIcon from '../../assets/conversation-icon.png';
 
 //@TODO : Refactor this function
-function updateConversation  (client, data) {
+function updateMessages  (client, data) {
     let conversationId = data.messageAdded.conversationId;
     let queryData = client.readQuery({
         query : GET_MESSAGE_QUERY,
@@ -32,6 +32,23 @@ function updateConversation  (client, data) {
         },
         data: {
             getMessages : [data.messageAdded,...queryData.getMessages]
+        }
+    });
+}
+
+function updateConversationMessages(client, data) {
+    let { getConversations } = client.readQuery({
+        query: CONVERSATION_QUERY
+    });
+    let index = getConversations.findIndex(conversation => conversation.id === data.messageAdded.conversationId);
+    let updatedConversations = [...getConversations]
+    updatedConversations[index].messages[0] = data.messageAdded;
+    console.log("in update", new Date());
+    getConversations.push(getConversations[0]);
+    client.writeQuery({
+        query: CONVERSATION_QUERY,
+        data: {
+            getConversations: [...updatedConversations]
         }
     });
 }
@@ -69,7 +86,8 @@ const Conversation = props => {
             document: MESSAGE_SUBSCRIPTION,
             updateQuery: (prev, { subscriptionData }) => {
                 if (!subscriptionData.data) return prev;
-                updateConversation(props.client, subscriptionData.data)
+                updateMessages(props.client, subscriptionData.data);
+                updateConversationMessages(props.client, subscriptionData.data)
             }
         });
 
@@ -104,6 +122,16 @@ const Conversation = props => {
         changeModalOpenState();
     };
 
+    const sortConversation = (conversationList) => {
+        conversationList.getConversations.sort((a,b) => {
+            if(!a.messages.length && !b.messages.length) return 0;
+            if(!a.messages.length) return -1;
+            if(!b.messages.length) return 1;
+            if(b.messages[0].createdAt > a.messages[0].createdAt) return 1;
+            else  return -1;
+        });
+    };
+
     return (
         <>
             { modalOpen &&
@@ -132,6 +160,7 @@ const Conversation = props => {
                         setConversationId(data.getConversations[0].id);
                         return <Redirect to={`/message/${data.getConversations[0].id}`} />
                     }
+                    sortConversation(data);
                     return (
                         <div  className={classes.container}>
                             <Toolbar

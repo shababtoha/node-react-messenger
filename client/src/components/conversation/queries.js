@@ -8,7 +8,14 @@ export const CONVERSATION_QUERY = gql`
             createdAt
             updatedAt
             messages {
+                id
                 message
+                conversationId
+                createdAt
+                user {
+                    username
+                    id
+                }
             }
         }
     }
@@ -47,6 +54,7 @@ export const MESSAGE_SUBSCRIPTION = gql`
             id
             message
             conversationId
+            createdAt
             user {
                 username
                 id
