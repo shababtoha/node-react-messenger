@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Query, withApollo } from 'react-apollo'
 import { withRouter, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Toolbar from './Toolbar';
 import ConversationDialog from './ConversationDialog';
-import ConversationComponent from './conversation';
+import ConversationComponent from './Conversation';
 import { MESSAGE_SUBSCRIPTION, CONVERSATION_QUERY } from './queries'
 import {GET_MESSAGE_QUERY} from "../message/queries";
 import { useDebounce } from '../../hooks/useDebounce';
+import { NewConversationContext } from '../../contexts/NewConversationContext';
 import conversationIcon from '../../assets/conversation-icon.png';
 
 //@TODO : Refactor this function
@@ -57,10 +58,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Conversation = props => {
-    const [conversationId, setConversationId] = useState(props.match.params.id);
     const [modalOpen, setModalOpen] = useState(false);
     const [searchText, setSearchText] = useState('');
     const debouncedText = useDebounce(searchText, 500);
+    const { title, setNewConversation, removeNewConversation } = useContext(NewConversationContext);
     const classes = useStyles();
 
     useEffect(() => {
@@ -80,7 +81,6 @@ const Conversation = props => {
     }, []);
 
     useEffect(() => {
-        console.log('---------', debouncedText);
     }, [debouncedText]);
 
     const changeConversation = conversationId => {
@@ -110,7 +110,7 @@ const Conversation = props => {
                 <ConversationDialog
                     open={modalOpen}
                     onClose={changeModalOpenState}
-                    addConversation={addConversation}
+                    addConversation={setNewConversation}
                 />
             }
             <Query query={CONVERSATION_QUERY}>
@@ -122,14 +122,13 @@ const Conversation = props => {
                         return  error.graphQLErrors.map(({ message }, i) => {
                             if (message === "Authentication Credentials was not provided") {
                                 localStorage.removeItem("authToken");
-                                return <Redirect to={`/login/${conversationId}`} />
+                                return <Redirect to='/login' />
                             } else {
                                 return <p> error </p>
                             }
                         });
                     }
-                    if(conversationId === undefined &&  data.getConversations && data.getConversations.length) {
-                        setConversationId(data.getConversations[0].id);
+                    if(props.match.params.id === undefined &&  data.getConversations && data.getConversations.length) {
                         return <Redirect to={`/message/${data.getConversations[0].id}`} />
                     }
                     return (
@@ -140,10 +139,19 @@ const Conversation = props => {
                                 setSearchText={setSearchText}
                             />
                             <div className={classes.conversationWrapper}>
+                                <ConversationComponent
+                                    key={0}
+                                    avatar={conversationIcon}
+                                    title={title}
+                                    text=""
+                                    conversationId="new"
+                                    onDelete={removeNewConversation}
+                                    onClick={changeConversation}
+                                />
                                 {
                                     data.getConversations.map((item, index) => (
                                         <ConversationComponent
-											key={index}
+											key={index+1}
                                             avatar={conversationIcon}
                                             title={item.title}
                                             text={ item.messages.length ? item.messages[0].message : "" }

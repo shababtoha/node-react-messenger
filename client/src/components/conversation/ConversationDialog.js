@@ -10,7 +10,6 @@ import TextField from "@material-ui/core/TextField";
 import { Autocomplete } from "@material-ui/lab";
 import {
   GET_USERS_QUERY,
-  CREATE_CONVERSATION_QUERY,
   CHECK_EXISTING_CONVERSATION_QUERY
 } from "./queries";
 import UserContext from "../../contexts/UserContext";
@@ -57,18 +56,8 @@ const ConversationDialog = props => {
       title += user.username + ", ";
       title += participants.map(item => item.username).join(", ");
     }
-    props.client
-      .mutate({
-        mutation: CREATE_CONVERSATION_QUERY,
-        variables: { userIds, title }
-      })
-      .then(data => {
-        data.data.createConversation.messages = [];
-        props.addConversation(props.client, data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    props.addConversation(title, userIds);
+    props.onClose();
   };
 
   const checkExistingConversations = () => {
@@ -92,6 +81,7 @@ const ConversationDialog = props => {
         }
       })
       .catch(error => {
+        console.log(error);
         props.onClose();
       });
   };

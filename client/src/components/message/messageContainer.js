@@ -30,14 +30,14 @@ const RenderMessage = (props) => {
         >
             {({loading, error, data, fetchMore}) => {
                 if(loading) return null;
-                if(error)   return <p>error</p>;
-                const messages = data.getMessages.map((item, key)=>{
+                // if(error)   return <p>error</p>;
+                const messages = data ?  data.getMessages.map(item => {
                     return <MessageComponent
                         me={item.user.username === props.username}
                         text={item.message}
                         key={item.id}
                     />
-                });
+                }) : [];
                 return <MessageContainerView
                         messages={messages}
                         onChange={props.handleInputChange}
@@ -73,11 +73,11 @@ const MessageContainer = props => {
                 {({loading, error, data}) => {
                     if(loading)
                         return <CircularProgress className={classes.loader} size={80} />;
-                    if(error) {
-                        return <p> error </p>
-                    }
+                    // if(error) {
+                    //     return <p> error </p>
+                    // }
                     return <RenderMessage
-                        title={data.getConversation.title}
+                        title={data ? data.getConversation.title : 'title'}
                         conversationId={conversationId}
                         username={props.user.username}
                         handleInputChange={v => setMessage(v)}

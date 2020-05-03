@@ -6,6 +6,7 @@ import Conversation from '../conversation';
 import MessageContainer from '../message/messageContainer';
 import { GET_ME_QUERY } from './queries';
 import { UserProvider } from '../../contexts/UserContext';
+import { NewConversationProvider } from '../../contexts/NewConversationContext';
 import styles from './styles'
 
 const useStyles = makeStyles(styles);
@@ -27,18 +28,20 @@ const Messenger  = props => {
                 const user = data.user;
                 return (
                     <UserProvider value={user}>
-                        <div className={classes.container}>
-                            <div className={classes.messenger} >
-                                <div className={classes.conversation}>
-                                    <Conversation
-                                        subscribeToNewMessage={subscribeToMore}
-                                    />
-                                </div>
-                                <div className={classes.message}>
-                                    <MessageContainer user={user} />
+                        <NewConversationProvider>
+                            <div className={classes.container}>
+                                <div className={classes.messenger} >
+                                    <div className={classes.conversation}>
+                                        <Conversation
+                                            subscribeToNewMessage={subscribeToMore}
+                                        />
+                                    </div>
+                                    <div className={classes.message}>
+                                        <MessageContainer user={user} />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </NewConversationProvider>
                     </UserProvider>
                 )
             }}

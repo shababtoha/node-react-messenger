@@ -6,8 +6,8 @@ const styles = theme => ({
         height : '100vh',
     },
     conversation : {
-        minWidth : 350,
-        width: '30%',
+        minWidth : 400,
+        width: '40%',
         borderRight : '1px solid #B0B3AF',
         overflow: 'hidden',
         height : '100%',
