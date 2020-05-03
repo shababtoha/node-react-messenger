@@ -1,27 +1,28 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Query, withApollo } from 'react-apollo'
-import { withRouter, Redirect } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Toolbar from './Toolbar';
-import ConversationDialog from './ConversationDialog';
-import ConversationComponent from './Conversation';
-import { MESSAGE_SUBSCRIPTION, CONVERSATION_QUERY } from './queries'
-import {GET_CONVERSATION_QUERY, GET_MESSAGE_QUERY} from "../message/queries";
-import { useDebounce } from '../../hooks/useDebounce';
-import { NewConversationContext } from '../../contexts/NewConversationContext';
-import conversationIcon from '../../assets/conversation-icon.png';
+import React, { useContext, useState, useEffect } from "react";
+import { Query, withApollo } from "react-apollo";
+import { withRouter, Redirect } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Toolbar from "./Toolbar";
+import ConversationDialog from "./ConversationDialog";
+import ConversationComponent from "./Conversation";
+import { MESSAGE_SUBSCRIPTION, CONVERSATION_QUERY } from "./queries";
+import { GET_MESSAGE_QUERY } from "../message/queries";
+import { useDebounce } from "../../hooks/useDebounce";
+import { ConversationContext } from "../../contexts/ConversationContext";
+import { NewConversationContext } from "../../contexts/NewConversationContext";
+import conversationIcon from "../../assets/conversation-icon.png";
 
 //@TODO : Refactor this function
-function updateMessages  (client, data) {
+function updateMessages(client, data) {
     let conversationId = data.messageAdded.conversationId;
     let queryData = client.readQuery({
-        query : GET_MESSAGE_QUERY,
+        query: GET_MESSAGE_QUERY,
         variables: {
             conversationId,
             offset: 0,
-            limit: 20
-        }
+            limit: 20,
+        },
     });
 
     client.writeQuery({
@@ -29,56 +30,61 @@ function updateMessages  (client, data) {
         variables: {
             conversationId,
             offset: 0,
-            limit: 20
+            limit: 20,
         },
         data: {
-            getMessages : [data.messageAdded,...queryData.getMessages]
-        }
+            getMessages: [data.messageAdded, ...queryData.getMessages],
+        },
     });
 }
 
 function updateConversationMessages(client, data) {
     let { getConversations } = client.readQuery({
-        query: CONVERSATION_QUERY
+        query: CONVERSATION_QUERY,
     });
-    let index = getConversations.findIndex(conversation => conversation.id === data.messageAdded.conversationId);
-    let updatedConversations = [...getConversations]
+    let index = getConversations.findIndex(
+        (conversation) => conversation.id === data.messageAdded.conversationId
+    );
+    let updatedConversations = [...getConversations];
     updatedConversations[index].messages[0] = data.messageAdded;
     console.log("in update", new Date());
     getConversations.push(getConversations[0]);
     client.writeQuery({
         query: CONVERSATION_QUERY,
         data: {
-            getConversations: [...updatedConversations]
-        }
+            getConversations: [...updatedConversations],
+        },
     });
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     loader: {
-        position: 'relative',
-        top: '45%',
-        left: '42%'
+        position: "relative",
+        top: "45%",
+        left: "42%",
     },
     container: {
         display: "flex",
         flexDirection: "column",
-        height: '100vh',
+        height: "100vh",
     },
     avatar: {
         width: 40,
-        height: 40
+        height: 40,
     },
     conversationWrapper: {
-        overflowY: 'scroll'
-    }
+        overflowY: "scroll",
+    },
 }));
 
-const Conversation = props => {
+const Conversation = (props) => {
     const [modalOpen, setModalOpen] = useState(false);
-    const [searchText, setSearchText] = useState('');
+    const [searchText, setSearchText] = useState("");
     const debouncedText = useDebounce(searchText, 500);
-    const { title, setNewConversation, removeNewConversation } = useContext(NewConversationContext);
+    const { setId, setTitle } = useContext(ConversationContext);
+    const { title, setNewConversation, removeNewConversation } = useContext(
+        NewConversationContext
+    );
     const classes = useStyles();
 
     useEffect(() => {
@@ -88,80 +94,99 @@ const Conversation = props => {
             updateQuery: (prev, { subscriptionData }) => {
                 if (!subscriptionData.data) return prev;
                 updateMessages(props.client, subscriptionData.data);
-                updateConversationMessages(props.client, subscriptionData.data)
-            }
+                updateConversationMessages(props.client, subscriptionData.data);
+            },
         });
 
         // function to be called before unmounting
         return () => {
             unsubscribe();
-        }
+        };
     }, []);
 
-    useEffect(() => {
-    }, [debouncedText]);
-
-    const changeConversation = conversationId => {
-        props.history.push(`/message/${conversationId}`)
-    };
+    useEffect(() => {}, [debouncedText]);
 
     const changeModalOpenState = () => {
-        setModalOpen(open => !open);
+        setModalOpen((open) => !open);
+    };
+
+    const changeConversation = (id, title) => {
+        setId(id);
+        setTitle(title);
+        props.history.push(`/message/${id}`);
     };
 
     const addConversation = (client, newConversation) => {
-        let {getConversations} = client.readQuery({
-            query: CONVERSATION_QUERY
+        let { getConversations } = client.readQuery({
+            query: CONVERSATION_QUERY,
         });
         client.writeQuery({
             query: CONVERSATION_QUERY,
             data: {
-                 getConversations: [newConversation.data.createConversation, ...getConversations]
-            }
+                getConversations: [
+                    newConversation.data.createConversation,
+                    ...getConversations,
+                ],
+            },
         });
         changeModalOpenState();
     };
 
     const sortConversation = (conversationList) => {
-        conversationList.getConversations.sort((a,b) => {
-            if(!a.messages.length && !b.messages.length) return 0;
-            if(!a.messages.length) return -1;
-            if(!b.messages.length) return 1;
-            if(b.messages[0].createdAt > a.messages[0].createdAt) return 1;
-            else  return -1;
+        conversationList.getConversations.sort((a, b) => {
+            if (!a.messages.length && !b.messages.length) return 0;
+            if (!a.messages.length) return -1;
+            if (!b.messages.length) return 1;
+            if (b.messages[0].createdAt > a.messages[0].createdAt) return 1;
+            else return -1;
         });
     };
 
     return (
         <>
-            { modalOpen &&
+            {modalOpen && (
                 <ConversationDialog
                     open={modalOpen}
                     onClose={changeModalOpenState}
                     addConversation={setNewConversation}
                 />
-            }
+            )}
             <Query query={CONVERSATION_QUERY}>
                 {({ loading, error, data }) => {
-                    if(loading)
-                        return <CircularProgress className={classes.loader} size={50} />;
-                    if(error) {
+                    if (loading)
+                        return (
+                            <CircularProgress
+                                className={classes.loader}
+                                size={50}
+                            />
+                        );
+                    if (error) {
                         console.log(error);
-                        return  error.graphQLErrors.map(({ message }, i) => {
-                            if (message === "Authentication Credentials was not provided") {
+                        return error.graphQLErrors.map(({ message }, i) => {
+                            if (
+                                message ===
+                                "Authentication Credentials was not provided"
+                            ) {
                                 localStorage.removeItem("authToken");
-                                return <Redirect to='/login' />
+                                return <Redirect to="/login" />;
                             } else {
-                                return <p> error </p>
+                                return <p> error </p>;
                             }
                         });
                     }
-                    if(props.match.params.id === undefined &&  data.getConversations && data.getConversations.length) {
-                        return <Redirect to={`/message/${data.getConversations[0].id}`} />
+                    if (
+                        props.match.params.id === undefined &&
+                        data.getConversations &&
+                        data.getConversations.length
+                    ) {
+                        const { id, title } = data.getConversations[0];
+                        setId(id);
+                        setTitle(title);
+                        return <Redirect to={`/message/${id}`} />;
                     }
                     sortConversation(data);
                     return (
-                        <div  className={classes.container}>
+                        <div className={classes.container}>
                             <Toolbar
                                 handleAddButtonClick={changeModalOpenState}
                                 searchText={searchText}
@@ -177,18 +202,20 @@ const Conversation = props => {
                                     onDelete={removeNewConversation}
                                     onClick={changeConversation}
                                 />
-                                {
-                                    data.getConversations.map((item, index) => (
-                                        <ConversationComponent
-											key={index+1}
-                                            avatar={conversationIcon}
-                                            title={item.title}
-                                            text={ item.messages.length ? item.messages[0].message : "" }
-                                            conversationId={item.id}
-                                            onClick={changeConversation}
-                                        />
-                                    ))
-                                }
+                                {data.getConversations.map((item, index) => (
+                                    <ConversationComponent
+                                        key={index + 1}
+                                        avatar={conversationIcon}
+                                        title={item.title}
+                                        text={
+                                            item.messages.length
+                                                ? item.messages[0].message
+                                                : ""
+                                        }
+                                        conversationId={item.id}
+                                        onClick={changeConversation}
+                                    />
+                                ))}
                             </div>
                         </div>
                     );

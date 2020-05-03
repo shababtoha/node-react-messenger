@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Conversation = (props) => {
   const [anchor, setAnchor] = useState(null);
+  const { conversationId, avatar, title, text, onClick, onDelete } = props;
   const classes = useStyles();
 
   const handleMenuIconClick = (event) => {
@@ -57,26 +58,27 @@ const Conversation = (props) => {
   };
 
   const handleDelete = () => {
-    if (props.onDelete) {
-      props.onDelete();
+    if (onDelete) {
+      onDelete();
     }
       handleMenuClose();
   };
 
   return (
     <div
-      className={props.title ? classes.container : classes.hidden}
-      onClick={() => props.onClick(props.conversationId)}
+      id={conversationId}
+      className={title ? classes.container : classes.hidden}
+      onClick={() => onClick(conversationId, title)}
     >
       <Avatar
         className={classes.avatar}
-        src={props.avatar}
-        alt={props.avatar}
+        src={avatar}
+        alt={avatar}
       />
       <div className={classes.textWrapper}>
         <Typography noWrap className={classes.title} variant="h6">
           {" "}
-          {props.title}{" "}
+          {title}{" "}
         </Typography>
         <Typography
           noWrap
@@ -85,7 +87,7 @@ const Conversation = (props) => {
           paragraph
         >
           {" "}
-          {props.text}{" "}
+          {text}{" "}
         </Typography>
       </div>
       <MenuIcon className={classes.menu} onClick={handleMenuIconClick} />

@@ -1,21 +1,19 @@
-import React, { useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { useState, useContext } from "react";
+import { withRouter } from "react-router-dom";
 import { Query } from "react-apollo";
-import { makeStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import MessageContainerView from './messageContainerView';
-import MessageComponent from '../presentational/message';
-import {
-    GET_MESSAGE_QUERY,
-    GET_CONVERSATION_QUERY,
-}  from './queries'
+import { makeStyles } from "@material-ui/core/styles";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import MessageContainerView from "./messageContainerView";
+import MessageComponent from "../presentational/message";
+import { ConversationContext } from "../../contexts/ConversationContext";
+import { GET_MESSAGE_QUERY, GET_CONVERSATION_QUERY } from "./queries";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     loader: {
-        position: 'relative',
-        top: '45%',
-        left: '43%'
-    }
+        position: "relative",
+        top: "45%",
+        left: "43%",
+    },
 }));
 
 const RenderMessage = (props) => {
@@ -25,69 +23,66 @@ const RenderMessage = (props) => {
             variables={{
                 conversationId: props.conversationId,
                 offset: 0,
-                limit: 20
+                limit: 20,
             }}
         >
-            {({loading, error, data, fetchMore}) => {
-                if(loading) return null;
+            {({ loading, error, data, fetchMore }) => {
+                if (loading) return null;
                 // if(error)   return <p>error</p>;
-                const messages = data ?  data.getMessages.map(item => {
-                    return <MessageComponent
-                        me={item.user.username === props.username}
-                        text={item.message}
-                        key={item.id}
-                    />
-                }) : [];
-                return <MessageContainerView
+                const messages = data
+                    ? data.getMessages.map((item) => {
+                          return (
+                              <MessageComponent
+                                  me={item.user.username === props.username}
+                                  text={item.message}
+                                  key={item.id}
+                              />
+                          );
+                      })
+                    : [];
+                return (
+                    <MessageContainerView
                         messages={messages}
                         onChange={props.handleInputChange}
                         value={props.value}
-                        conversationId={props.conversationId }
+                        conversationId={props.conversationId}
                         title={props.title}
-                        onLoadMore={() => fetchMore({
-                            variables: {
-                                offset: data.getMessages.length
-                            },
-                            updateQuery: (prev, { fetchMoreResult }) => {
-                                if (!fetchMoreResult) return prev;
-                                return Object.assign({}, prev, {
-                                    getMessages: [...prev.getMessages, ...fetchMoreResult.getMessages]
-                                });
-                            }
-                        })}
+                        onLoadMore={() =>
+                            fetchMore({
+                                variables: {
+                                    offset: data.getMessages.length,
+                                },
+                                updateQuery: (prev, { fetchMoreResult }) => {
+                                    if (!fetchMoreResult) return prev;
+                                    return Object.assign({}, prev, {
+                                        getMessages: [
+                                            ...prev.getMessages,
+                                            ...fetchMoreResult.getMessages,
+                                        ],
+                                    });
+                                },
+                            })
+                        }
                     />
+                );
             }}
         </Query>
-    )
+    );
 };
 
-
-const MessageContainer = props => {
-    const [message, setMessage] = useState('');
-    const conversationId = props.match.params.id;
-    const classes = useStyles();
+const MessageContainer = (props) => {
+    const [message, setMessage] = useState("");
+    const { id, title } = useContext(ConversationContext);
 
     return (
-        !conversationId ? null : (
-            <Query query={GET_CONVERSATION_QUERY} variables={{ id: conversationId }} >
-                {({loading, error, data}) => {
-                    if(loading)
-                        return <CircularProgress className={classes.loader} size={80} />;
-                    // if(error) {
-                    //     return <p> error </p>
-                    // }
-                    return <RenderMessage
-                        title={data ? data.getConversation.title : 'title'}
-                        conversationId={conversationId}
-                        username={props.user.username}
-                        handleInputChange={v => setMessage(v)}
-                        value={message}
-                    />
-                }}
-            </Query>
-        )
+        <RenderMessage
+            title={title ? title : ""}
+            conversationId={id}
+            username={props.user.username}
+            handleInputChange={(v) => setMessage(v)}
+            value={message}
+        />
     );
-
 };
 
 export default withRouter(MessageContainer);
