@@ -1,6 +1,8 @@
 const { gql } = require('apollo-server');
 
-const  typeDefs = gql`
+const  typeDefs = gql` 
+    scalar Date
+    
     extend type Query {
         getMessages(conversationId: String!, offset: Int, limit: Int): [Message]!
     }
@@ -15,6 +17,7 @@ const  typeDefs = gql`
         conversationId: String!
         attachment_url: String
         user: User
+        createdAt: Date!
     }
     
     input MessageInput {

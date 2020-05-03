@@ -69,7 +69,8 @@ const ConversationDialog = props => {
     props.client
       .query({
         query: CHECK_EXISTING_CONVERSATION_QUERY,
-        variables: { userIds }
+        variables: { userIds },
+        fetchPolicy: "network-only"
       })
       .then(data => {
         const conversationId = data.data.checkExistingConversation;
