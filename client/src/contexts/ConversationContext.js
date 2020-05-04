@@ -1,5 +1,4 @@
 import React, { useState, createContext } from "react";
-import history from "../history";
 
 const ConversationContext = createContext({
     id: null,

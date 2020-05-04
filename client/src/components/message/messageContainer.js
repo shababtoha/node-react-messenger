@@ -6,7 +6,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import MessageContainerView from "./messageContainerView";
 import MessageComponent from "../presentational/message";
 import { ConversationContext } from "../../contexts/ConversationContext";
-import { GET_MESSAGE_QUERY, GET_CONVERSATION_QUERY } from "./queries";
+import { GET_MESSAGE_QUERY } from "./queries";
 
 const useStyles = makeStyles((theme) => ({
     loader: {
@@ -16,26 +16,30 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const RenderMessage = (props) => {
+const MessageContainer = (props) => {
+    const [message, setMessage] = useState("");
+    const { id, title } = useContext(ConversationContext);
+    const classes = useStyles();
+
     return (
         <Query
             query={GET_MESSAGE_QUERY}
             variables={{
-                conversationId: props.conversationId,
+                conversationId: id,
                 offset: 0,
                 limit: 20,
             }}
         >
-            {({ loading, error, data, fetchMore }) => {
-                if (loading) return null;
-                // if(error)   return <p>error</p>;
+            {({ loading, data, fetchMore }) => {
+                if (loading)
+                    return <CircularProgress className={classes.loader} />;
                 const messages = data
-                    ? data.getMessages.map((item) => {
+                    ? data.getMessages.map(({ id, message, user }) => {
                           return (
                               <MessageComponent
-                                  me={item.user.username === props.username}
-                                  text={item.message}
-                                  key={item.id}
+                                  key={id}
+                                  text={message}
+                                  me={user.username === props.user.username}
                               />
                           );
                       })
@@ -43,10 +47,10 @@ const RenderMessage = (props) => {
                 return (
                     <MessageContainerView
                         messages={messages}
-                        onChange={props.handleInputChange}
-                        value={props.value}
-                        conversationId={props.conversationId}
-                        title={props.title}
+                        onChange={(v) => setMessage(v)}
+                        value={message}
+                        conversationId={id}
+                        title={title ? title : ""}
                         onLoadMore={() =>
                             fetchMore({
                                 variables: {
@@ -67,21 +71,6 @@ const RenderMessage = (props) => {
                 );
             }}
         </Query>
-    );
-};
-
-const MessageContainer = (props) => {
-    const [message, setMessage] = useState("");
-    const { id, title } = useContext(ConversationContext);
-
-    return (
-        <RenderMessage
-            title={title ? title : ""}
-            conversationId={id}
-            username={props.user.username}
-            handleInputChange={(v) => setMessage(v)}
-            value={message}
-        />
     );
 };
 
