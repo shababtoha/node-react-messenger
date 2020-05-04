@@ -18,7 +18,8 @@ const useStyles = makeStyles((theme) => ({
 
 const MessageContainer = (props) => {
     const [message, setMessage] = useState("");
-    const { id, title } = useContext(ConversationContext);
+    const id = props.match.params.id;
+    const { title } = useContext(ConversationContext);
     const classes = useStyles();
 
     return (

@@ -81,7 +81,7 @@ const Conversation = (props) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [searchText, setSearchText] = useState("");
     const debouncedText = useDebounce(searchText, 500);
-    const { setId, setTitle } = useContext(ConversationContext);
+    const { setConversation, changeConversation } = useContext(ConversationContext);
     const { title, setNewConversation, removeNewConversation } = useContext(
         NewConversationContext
     );
@@ -108,28 +108,6 @@ const Conversation = (props) => {
 
     const changeModalOpenState = () => {
         setModalOpen((open) => !open);
-    };
-
-    const changeConversation = (id, title) => {
-        setId(id);
-        setTitle(title);
-        props.history.push(`/message/${id}`);
-    };
-
-    const addConversation = (client, newConversation) => {
-        let { getConversations } = client.readQuery({
-            query: CONVERSATION_QUERY,
-        });
-        client.writeQuery({
-            query: CONVERSATION_QUERY,
-            data: {
-                getConversations: [
-                    newConversation.data.createConversation,
-                    ...getConversations,
-                ],
-            },
-        });
-        changeModalOpenState();
     };
 
     const sortConversation = (conversationList) => {
@@ -180,8 +158,7 @@ const Conversation = (props) => {
                         data.getConversations.length
                     ) {
                         const { id, title } = data.getConversations[0];
-                        setId(id);
-                        setTitle(title);
+                        setConversation(id, title);
                         return <Redirect to={`/message/${id}`} />;
                     }
                     sortConversation(data);
@@ -200,7 +177,7 @@ const Conversation = (props) => {
                                     text=""
                                     conversationId="new"
                                     onDelete={removeNewConversation}
-                                    onClick={changeConversation}
+                                    changeConversation={changeConversation}
                                 />
                                 {data.getConversations.map((item, index) => (
                                     <ConversationComponent
@@ -213,7 +190,7 @@ const Conversation = (props) => {
                                                 : ""
                                         }
                                         conversationId={item.id}
-                                        onClick={changeConversation}
+                                        changeConversation={changeConversation}
                                     />
                                 ))}
                             </div>

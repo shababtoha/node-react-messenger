@@ -6,6 +6,7 @@ import TopBar from "./TopBar";
 import { CREATE_CONVERSATION_QUERY, CREATE_MESSAGE_QUERY } from "./queries";
 import { CONVERSATION_QUERY } from "../conversation/queries";
 import { NewConversationContext } from "../../contexts/NewConversationContext";
+import history from '../../history';
 
 const useStyles = makeStyles((theme) => ({
     inputDiv: {
@@ -111,6 +112,7 @@ const MessageContainer = (props) => {
                                                     value,
                                                     createMessage
                                                 );
+                                                history.push(`/message/${data.createConversation.id}`);
                                             });
                                     } else {
                                         sendMessage(
