@@ -31,11 +31,12 @@ const MessageContainer = (props) => {
                 limit: 20,
             }}
         >
-            {({ loading, data, fetchMore }) => {
+            {({ loading, data, error, fetchMore }) => {
                 if (loading)
                     return <CircularProgress className={classes.loader} />;
-                const messages = data
-                    ? data.getMessages.map(({ id, message, user }) => {
+                const messages = error
+                    ? []
+                    : data.getMessages.map(({ id, message, user }) => {
                           return (
                               <MessageComponent
                                   key={id}
@@ -43,8 +44,7 @@ const MessageContainer = (props) => {
                                   me={user.username === props.user.username}
                               />
                           );
-                      })
-                    : [];
+                      });
                 return (
                     <MessageContainerView
                         messages={messages}
