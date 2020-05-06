@@ -8,7 +8,7 @@ const typeDefs = gql`
     }
     
      extend type Mutation {
-        createConversation(userIds: [String!]!, title: String!): Conversation!
+        createConversation(userIds: [String!]!, title: String!, message: MessageInput!): Conversation!
     }
     
     type Conversation {

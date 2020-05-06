@@ -31,9 +31,14 @@ const MessageContainer = (props) => {
                 limit: 20,
             }}
         >
-            {({ loading, data, fetchMore }) => {
+            {({ loading, data, error, fetchMore }) => {
                 if (loading)
                     return <CircularProgress className={classes.loader} />;
+                if(error) {
+                    //@TODO handle error properly
+                    return <p>error</p>
+                }
+
                 const messages = data
                     ? data.getMessages.map(({ id, message, user }) => {
                           return (

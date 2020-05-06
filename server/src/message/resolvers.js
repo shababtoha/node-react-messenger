@@ -1,9 +1,9 @@
 const Message = require('./data');
-const Conversation = require('../conversation/data');
 const {AuthenticationError, withFilter} = require('apollo-server');
 const  User  = require('../user/data');
 const {pubsub} = require('../../pubsub');
 const MESSAGE_ADDED = 'MESSAGE_ADDED';
+const {publishMessage} = require('./messageService')
 
 module.exports = {
     Query: {
@@ -22,9 +22,10 @@ module.exports = {
             return Message.createMessage(message).then(result => {
                 const user = User.get(context.id);
                 result.user = user;
-                Conversation.getUsers(message.conversationId).then( users => {
-                    pubsub.publish(MESSAGE_ADDED, { messageAdded: result, users });
-                });
+                // Conversation.getUsers(message.conversationId).then( users => {
+                //     pubsub.publish(MESSAGE_ADDED, { messageAdded: result, users });
+                // });
+                publishMessage(result);
                 return result;
             });
         }

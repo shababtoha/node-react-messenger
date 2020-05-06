@@ -30,8 +30,8 @@ export const GET_CONVERSATION_QUERY = gql`
 `;
 
 export const CREATE_CONVERSATION_QUERY = gql`
-    mutation CreateConversation($userIds: [String!]!, $title : String!) {
-        createConversation(userIds: $userIds, title: $title) {
+    mutation CreateConversation($userIds: [String!]!, $title : String!,$MessageInput: MessageInput!) {
+        createConversation(userIds: $userIds, title: $title, message: $MessageInput) {
             id
             title
             createdAt
