@@ -22,7 +22,7 @@ const  typeDefs = gql`
     
     input MessageInput {
         message: String
-        conversationId: String!
+        conversationId: String
         attachment_url: String
     }
 `;

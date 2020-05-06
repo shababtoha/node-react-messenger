@@ -94,6 +94,7 @@ const MessageContainer = (props) => {
                             onKeyUp={(e) => {
                                 const key = e.keyCode;
                                 if (key === 13 && !e.shiftKey) {
+                                    console.log(users);
                                     if (conversationId === "new") {
                                         client
                                             .mutate({
@@ -101,17 +102,20 @@ const MessageContainer = (props) => {
                                                 variables: {
                                                     userIds: users,
                                                     title,
+                                                    MessageInput: {
+                                                        message: value
+                                                    },
                                                 },
                                             })
                                             .then(({ data }) => {
                                                 removeNewConversation();
                                                 data.createConversation.messages = [];
-                                                addConversation(client, data);
-                                                sendMessage(
-                                                    data.createConversation.id,
-                                                    value,
-                                                    createMessage
-                                                );
+                                               // addConversation(client, data);
+                                                // sendMessage(
+                                                //     data.createConversation.id,
+                                                //     value,
+                                                //     createMessage
+                                                // );
                                                 history.push(`/message/${data.createConversation.id}`);
                                             });
                                     } else {

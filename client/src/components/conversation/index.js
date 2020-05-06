@@ -6,56 +6,14 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Toolbar from "./Toolbar";
 import ConversationDialog from "./ConversationDialog";
 import ConversationComponent from "./Conversation";
-import { MESSAGE_SUBSCRIPTION, CONVERSATION_QUERY } from "./queries";
+import {MESSAGE_SUBSCRIPTION, CONVERSATION_QUERY, GET_CONVERSATION_QUERY} from "./queries";
 import { GET_MESSAGE_QUERY } from "../message/queries";
 import { useDebounce } from "../../hooks/useDebounce";
 import { ConversationContext } from "../../contexts/ConversationContext";
 import { NewConversationContext } from "../../contexts/NewConversationContext";
 import conversationIcon from "../../assets/conversation-icon.png";
+import {getConversationFromServer, updateConversationMessages, updateMessages} from "../../Cache/cache";
 
-//@TODO : Refactor this function
-function updateMessages(client, data) {
-    let conversationId = data.messageAdded.conversationId;
-    let queryData = client.readQuery({
-        query: GET_MESSAGE_QUERY,
-        variables: {
-            conversationId,
-            offset: 0,
-            limit: 20,
-        },
-    });
-
-    client.writeQuery({
-        query: GET_MESSAGE_QUERY,
-        variables: {
-            conversationId,
-            offset: 0,
-            limit: 20,
-        },
-        data: {
-            getMessages: [data.messageAdded, ...queryData.getMessages],
-        },
-    });
-}
-
-function updateConversationMessages(client, data) {
-    let { getConversations } = client.readQuery({
-        query: CONVERSATION_QUERY,
-    });
-    let index = getConversations.findIndex(
-        (conversation) => conversation.id === data.messageAdded.conversationId
-    );
-    let updatedConversations = [...getConversations];
-    updatedConversations[index].messages[0] = data.messageAdded;
-    console.log("in update", new Date());
-    getConversations.push(getConversations[0]);
-    client.writeQuery({
-        query: CONVERSATION_QUERY,
-        data: {
-            getConversations: [...updatedConversations],
-        },
-    });
-}
 
 const useStyles = makeStyles((theme) => ({
     loader: {
@@ -93,9 +51,14 @@ const Conversation = (props) => {
             document: MESSAGE_SUBSCRIPTION,
             updateQuery: (prev, { subscriptionData }) => {
                 if (!subscriptionData.data) return prev;
-                updateMessages(props.client, subscriptionData.data);
-                updateConversationMessages(props.client, subscriptionData.data);
-            },
+                debugger;
+                let isUpdated = updateConversationMessages(props.client, subscriptionData.data);
+                if(!isUpdated) {
+                    getConversationFromServer(props.client, subscriptionData.data.messageAdded.conversationId);
+                } else {
+                    updateMessages(props.client, subscriptionData.data);
+                }
+            }
         });
 
         // function to be called before unmounting

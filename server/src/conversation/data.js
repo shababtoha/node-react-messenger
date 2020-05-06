@@ -4,10 +4,10 @@ const User = require('../../models').user;
 const Message = require('../../models').message;
 const Sequelize = require('../../models').sequelize;
 const { QueryTypes, Op } = require('sequelize');
+const {createMessage} = require('../message/data');
 
-module.exports = {
-    getConversations: (userId) => {
-        return Conversation.findAll({
+const conversationQueryCondition = (userId) => {
+    return {
             include: [
                 {
                     model: Participant,
@@ -18,10 +18,10 @@ module.exports = {
                 {
                     model: Message,
                     where: {
-                      [Op.and]: Sequelize.literal(
-                          '"messages"."createdAt" = ( SELECT MAX("createdAt") FROM "messages" ' +
-                          'WHERE "conversation".id = "messages"."conversationId") '
-                      )
+                        [Op.and]: Sequelize.literal(
+                            '"messages"."createdAt" = ( SELECT MAX("createdAt") FROM "messages" ' +
+                            'WHERE "conversation".id = "messages"."conversationId") '
+                        )
                     },
                     include: [
                         {
@@ -31,25 +31,21 @@ module.exports = {
                 }
             ],
             order: [
-                [Sequelize.col('messages.createdAt'),'DESC']
+                [Sequelize.col('messages.createdAt'), 'DESC']
             ]
-        })
+    }
+};
+
+module.exports = {
+    getConversations: (userId) => {
+        return Conversation.findAll(conversationQueryCondition(userId))
     },
 
-    getConversation: (conversationId) => {
-        return Conversation.findByPk(conversationId, {
-            include: [{
-                model: Participant,
-                include: [
-                    {
-                        model: User
-                    }
-                ]
-            }]
-        });
+    getConversation: (conversationId, userId) => {
+        return Conversation.findByPk(conversationId, conversationQueryCondition(userId));
     },
 
-    createConversation: (userIds, title) => {
+    createConversation: (userIds, title, message) => {
         return Sequelize.transaction(t => {
             return Conversation.create({title}, {transaction: t})
                 .then(conversation => {
@@ -59,7 +55,12 @@ module.exports = {
                     return Participant.bulkCreate(newParticipants, {
                         transaction: t,
                     }).then( ()=>{
-                        return { conversationId: conversation.id};
+                        message.conversationId = conversation.id;
+                        return Message.create(message, {
+                            transaction: t
+                        }).then( message => {
+                            return message.dataValues;
+                        });
                     });
                 });
         });

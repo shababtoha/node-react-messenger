@@ -1,25 +1,38 @@
 import gql from "graphql-tag";
 
-export const CONVERSATION_QUERY = gql`
-    query {
-        getConversations {
+const conversationObj = `
+    id
+    title
+    createdAt
+    updatedAt
+    messages {
+        id
+        message
+        conversationId
+        createdAt
+        user {
+            username
             id
-            title
-            createdAt
-            updatedAt
-            messages {
-                id
-                message
-                conversationId
-                createdAt
-                user {
-                    username
-                    id
-                }
-            }
         }
     }
 `;
+
+export const CONVERSATION_QUERY = gql`
+    query {
+        getConversations {
+           ${conversationObj}
+        }
+    }
+`;
+
+export const GET_CONVERSATION_QUERY = gql`
+    query GetConversation($id: String!) {
+        getConversation(id: $id) {
+            ${conversationObj}
+        }
+    }
+`;
+
 
 export const GET_USERS_QUERY = gql`
     query Users($username: String!) {

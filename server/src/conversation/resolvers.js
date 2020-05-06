@@ -1,5 +1,6 @@
 const Conversation = require('./data');
 const {AuthenticationError} = require('apollo-server');
+const {publishMessage} = require('../message/messageService');
 
 module.exports = {
     Query: {
@@ -12,7 +13,7 @@ module.exports = {
         getConversation: (_, {id}, context) => {
             if (!context.id)
                 throw new AuthenticationError("Authentication Credentials was not provided");
-            return Conversation.getConversation(id);
+            return Conversation.getConversation(id, context.id);
         },
 
         checkExistingConversation: (_, {userIds}, context) => {
@@ -30,13 +31,15 @@ module.exports = {
         }
     },
     Mutation: {
-        createConversation: (_, {userIds, title}, context) => {
+        createConversation: (_, {userIds, title, message}, context) => {
             if (!context.id)
                 throw new AuthenticationError("Authentication Credentials was not provided");
             userIds.push(context.id);
-            return Conversation.createConversation(userIds, title)
+            message.sentBy = context.id;
+            return Conversation.createConversation(userIds, title, message)
                 .then(data => {
-                    return Conversation.getConversation(data.conversationId);
+                    publishMessage(data);
+                    return Conversation.getConversation(data.conversationId, context.id);
                 });
         }
     },
