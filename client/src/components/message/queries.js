@@ -29,6 +29,17 @@ export const GET_CONVERSATION_QUERY = gql`
     }
 `;
 
+export const CREATE_CONVERSATION_QUERY = gql`
+    mutation CreateConversation($userIds: [String!]!, $title : String!) {
+        createConversation(userIds: $userIds, title: $title) {
+            id
+            title
+            createdAt
+            updatedAt
+        }
+    }
+`;
+
 export const CREATE_MESSAGE_QUERY = gql`
     mutation CreateMessage($MessageInput: MessageInput!) {
         createMessage(message: $MessageInput) {
