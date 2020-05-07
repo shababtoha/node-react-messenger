@@ -27,8 +27,8 @@ const MessageContainer = (props) => {
             query={GET_MESSAGE_QUERY}
             variables={{
                 conversationId: id,
-                offset: 0,
-                limit: 20,
+                offset: parseInt(process.env.REACT_APP_OFFSET),
+                limit: parseInt(process.env.REACT_APP_LIMIT),
             }}
         >
             {({ loading, data, error, fetchMore }) => {

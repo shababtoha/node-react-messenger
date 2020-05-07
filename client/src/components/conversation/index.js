@@ -6,14 +6,16 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Toolbar from "./Toolbar";
 import ConversationDialog from "./ConversationDialog";
 import ConversationComponent from "./Conversation";
-import {MESSAGE_SUBSCRIPTION, CONVERSATION_QUERY, GET_CONVERSATION_QUERY} from "./queries";
-import { GET_MESSAGE_QUERY } from "../message/queries";
+import { MESSAGE_SUBSCRIPTION, CONVERSATION_QUERY } from "./queries";
 import { useDebounce } from "../../hooks/useDebounce";
 import { ConversationContext } from "../../contexts/ConversationContext";
 import { NewConversationContext } from "../../contexts/NewConversationContext";
 import conversationIcon from "../../assets/conversation-icon.png";
-import {getConversationFromServer, updateConversationMessages, updateMessages} from "../../Cache/cache";
-
+import {
+    getConversationFromServer,
+    updateConversationMessages,
+    updateMessages,
+} from "../../Cache/cache";
 
 const useStyles = makeStyles((theme) => ({
     loader: {
@@ -39,7 +41,9 @@ const Conversation = (props) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [searchText, setSearchText] = useState("");
     const debouncedText = useDebounce(searchText, 500);
-    const { setConversation, changeConversation } = useContext(ConversationContext);
+    const { setConversation, changeConversation } = useContext(
+        ConversationContext
+    );
     const { title, setNewConversation, removeNewConversation } = useContext(
         NewConversationContext
     );
@@ -51,14 +55,19 @@ const Conversation = (props) => {
             document: MESSAGE_SUBSCRIPTION,
             updateQuery: (prev, { subscriptionData }) => {
                 if (!subscriptionData.data) return prev;
-                debugger;
-                let isUpdated = updateConversationMessages(props.client, subscriptionData.data);
-                if(!isUpdated) {
-                    getConversationFromServer(props.client, subscriptionData.data.messageAdded.conversationId);
+                let isUpdated = updateConversationMessages(
+                    props.client,
+                    subscriptionData.data
+                );
+                if (!isUpdated) {
+                    getConversationFromServer(
+                        props.client,
+                        subscriptionData.data.messageAdded.conversationId
+                    );
                 } else {
                     updateMessages(props.client, subscriptionData.data);
                 }
-            }
+            },
         });
 
         // function to be called before unmounting
