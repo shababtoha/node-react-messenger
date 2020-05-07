@@ -14,21 +14,6 @@ export const GET_MESSAGE_QUERY = gql`
     }
 `;
 
-export const GET_CONVERSATION_QUERY = gql`
-    query GetConversation($id: String!) {
-        getConversation(id: $id) {
-            title
-            participants {
-                id
-                user {
-                    id
-                    username
-                }
-            }
-        }
-    }
-`;
-
 export const CREATE_CONVERSATION_QUERY = gql`
     mutation CreateConversation($userIds: [String!]!, $title : String!,$MessageInput: MessageInput!) {
         createConversation(userIds: $userIds, title: $title, message: $MessageInput) {

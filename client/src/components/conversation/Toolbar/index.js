@@ -30,10 +30,10 @@ const Toolbar = props => {
 
   const renderLeft = () => (
     <Grid container>
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <Avatar className={classes.avatar} src={avatar} alt={avatar} />
       </Grid>
-      <Grid item xs={9} className={classes.title}>
+      <Grid item xs={8} className={classes.title}>
         <Typography variant="h6">Conversations</Typography>
       </Grid>
     </Grid>

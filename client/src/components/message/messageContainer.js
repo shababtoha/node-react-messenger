@@ -27,20 +27,16 @@ const MessageContainer = (props) => {
             query={GET_MESSAGE_QUERY}
             variables={{
                 conversationId: id,
-                offset: 0,
-                limit: 20,
+                offset: parseInt(process.env.REACT_APP_OFFSET),
+                limit: parseInt(process.env.REACT_APP_LIMIT),
             }}
         >
             {({ loading, data, error, fetchMore }) => {
                 if (loading)
                     return <CircularProgress className={classes.loader} />;
-                if(error) {
-                    //@TODO handle error properly
-                    return <p>error</p>
-                }
-
-                const messages = data
-                    ? data.getMessages.map(({ id, message, user }) => {
+                const messages = error
+                    ? []
+                    : data.getMessages.map(({ id, message, user }) => {
                           return (
                               <MessageComponent
                                   key={id}
@@ -48,8 +44,7 @@ const MessageContainer = (props) => {
                                   me={user.username === props.user.username}
                               />
                           );
-                      })
-                    : [];
+                      });
                 return (
                     <MessageContainerView
                         messages={messages}

@@ -25,12 +25,12 @@ const useStyles = makeStyles((theme) => ({
         marginRight: 10,
     },
     textWrapper: {
-        marginRight: theme.spacing(2),
-        width: 250,
-        flexGrow: 1,
+        minWidth: 200,
+        width: '90%',
     },
     title: {
         textTransform: "capitalize",
+        width: '95%',
         fontSize: 16,
         margin: 0,
     },

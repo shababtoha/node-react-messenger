@@ -14,10 +14,11 @@ const NewConversationProvider = (props) => {
         localStorage.getItem(NEW_CONVERSATION_TITLE_KEY) || null
     );
     const [users, setUsers] = useState(
-        localStorage.getItem(NEW_CONVERSATION_USERS_KEY | null)
+        localStorage.getItem(NEW_CONVERSATION_USERS_KEY) || null
     );
 
     const setNewConversation = (title, users) => {
+        users = JSON.stringify(users);
         localStorage.setItem(NEW_CONVERSATION_TITLE_KEY, title);
         localStorage.setItem(NEW_CONVERSATION_USERS_KEY, users);
         setTitle(title);

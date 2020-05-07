@@ -44,6 +44,10 @@ cd PROJECT_DIRECTORY/client
 # install front-end packages
 npm install
 
+# make .env from env.example
+# .env contains necessary environment variables
+cp env.example .env
+
 #run app
 npm start
 ```

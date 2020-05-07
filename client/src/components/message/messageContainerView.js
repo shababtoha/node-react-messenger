@@ -4,9 +4,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import TopBar from "./TopBar";
 import { CREATE_CONVERSATION_QUERY, CREATE_MESSAGE_QUERY } from "./queries";
-import { CONVERSATION_QUERY } from "../conversation/queries";
 import { NewConversationContext } from "../../contexts/NewConversationContext";
-import history from '../../history';
+import history from "../../history";
 
 const useStyles = makeStyles((theme) => ({
     inputDiv: {
@@ -43,32 +42,6 @@ const MessageContainer = (props) => {
     const { users, removeNewConversation } = useContext(NewConversationContext);
     const classes = useStyles();
 
-    const addConversation = (client, data) => {
-        let { getConversations } = client.readQuery({
-            query: CONVERSATION_QUERY,
-        });
-        client.writeQuery({
-            query: CONVERSATION_QUERY,
-            data: {
-                getConversations: [
-                    data.createConversation,
-                    ...getConversations,
-                ],
-            },
-        });
-    };
-
-    const sendMessage = (conversationId, value, createMessage) => {
-        createMessage({
-            variables: {
-                MessageInput: {
-                    message: value,
-                    conversationId: conversationId,
-                },
-            },
-        });
-    };
-
     return (
         <div className={classes.container}>
             <TopBar title={title ? title : "Messages"} />
@@ -94,36 +67,34 @@ const MessageContainer = (props) => {
                             onKeyUp={(e) => {
                                 const key = e.keyCode;
                                 if (key === 13 && !e.shiftKey) {
-                                    console.log(users);
                                     if (conversationId === "new") {
                                         client
                                             .mutate({
                                                 mutation: CREATE_CONVERSATION_QUERY,
                                                 variables: {
-                                                    userIds: users,
+                                                    userIds: JSON.parse(users),
                                                     title,
                                                     MessageInput: {
-                                                        message: value
+                                                        message: value,
                                                     },
                                                 },
                                             })
                                             .then(({ data }) => {
                                                 removeNewConversation();
                                                 data.createConversation.messages = [];
-                                               // addConversation(client, data);
-                                                // sendMessage(
-                                                //     data.createConversation.id,
-                                                //     value,
-                                                //     createMessage
-                                                // );
-                                                history.push(`/message/${data.createConversation.id}`);
+                                                history.push(
+                                                    `/message/${data.createConversation.id}`
+                                                );
                                             });
                                     } else {
-                                        sendMessage(
-                                            conversationId,
-                                            value,
-                                            createMessage
-                                        );
+                                        createMessage({
+                                            variables: {
+                                                MessageInput: {
+                                                    message: value,
+                                                    conversationId: conversationId,
+                                                },
+                                            },
+                                        });
                                     }
                                     e.target.value = "";
                                     onChange("");
