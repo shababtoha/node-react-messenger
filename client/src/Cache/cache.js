@@ -14,8 +14,8 @@ export function updateMessages(client, data) {
         query: GET_MESSAGE_QUERY,
         variables: {
             conversationId,
-            offset: 0,
-            limit: 20,
+            offset: parseInt(process.env.REACT_APP_MESSAGE_OFFSET),
+            limit: parseInt(process.env.REACT_APP_MESSAGE_LIMIT)
         },
     });
 
@@ -23,8 +23,8 @@ export function updateMessages(client, data) {
         query: GET_MESSAGE_QUERY,
         variables: {
             conversationId,
-            offset: 0,
-            limit: 20,
+            offset: parseInt(process.env.REACT_APP_MESSAGE_OFFSET),
+            limit: parseInt(process.env.REACT_APP_MESSAGE_LIMIT)
         },
         data: {
             getMessages: [data.messageAdded, ...queryData.getMessages],

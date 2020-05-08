@@ -70,7 +70,10 @@ class Login extends Component{
                 }
             }
         }).then(result=>{
-            console.log(result);
+            client.resetStore().then(()=>{
+                localStorage.setItem("authToken", result.data.register.token);
+                this.props.history.push('/message');
+            });
         }).catch(error => {
            console.log(error);
         });

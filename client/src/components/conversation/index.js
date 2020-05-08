@@ -49,6 +49,7 @@ const Conversation = (props) => {
     );
     const classes = useStyles();
 
+
     useEffect(() => {
         // called only once after render
         let unsubscribe = props.subscribeToNewMessage({

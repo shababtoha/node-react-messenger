@@ -22,13 +22,32 @@ const MessageContainer = (props) => {
     const { title } = useContext(ConversationContext);
     const classes = useStyles();
 
+    //load more message on scroll up. fetchMore is a callback function
+    const loadMoreMessage = (fetchMore, data) => {
+        fetchMore({
+            variables: {
+                offset: data.getMessages.length,
+            },
+            updateQuery: (prev, { fetchMoreResult }) => {
+                if (!fetchMoreResult) return prev;
+                return Object.assign({}, prev, {
+                    getMessages: [
+                        ...prev.getMessages,
+                        ...fetchMoreResult.getMessages,
+                    ],
+                });
+            },
+        })
+    };
+
     return (
+        !id ? null :
         <Query
             query={GET_MESSAGE_QUERY}
             variables={{
                 conversationId: id,
-                offset: parseInt(process.env.REACT_APP_OFFSET),
-                limit: parseInt(process.env.REACT_APP_LIMIT),
+                offset: parseInt(process.env.REACT_APP_MESSAGE_OFFSET),
+                limit: parseInt(process.env.REACT_APP_MESSAGE_LIMIT),
             }}
         >
             {({ loading, data, error, fetchMore }) => {
@@ -52,22 +71,7 @@ const MessageContainer = (props) => {
                         value={message}
                         conversationId={id}
                         title={title ? title : ""}
-                        onLoadMore={() =>
-                            fetchMore({
-                                variables: {
-                                    offset: data.getMessages.length,
-                                },
-                                updateQuery: (prev, { fetchMoreResult }) => {
-                                    if (!fetchMoreResult) return prev;
-                                    return Object.assign({}, prev, {
-                                        getMessages: [
-                                            ...prev.getMessages,
-                                            ...fetchMoreResult.getMessages,
-                                        ],
-                                    });
-                                },
-                            })
-                        }
+                        onLoadMore={() => loadMoreMessage(fetchMore, data) }
                     />
                 );
             }}

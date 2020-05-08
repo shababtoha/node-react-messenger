@@ -42,6 +42,54 @@ const MessageContainer = (props) => {
     const { users, removeNewConversation } = useContext(NewConversationContext);
     const classes = useStyles();
 
+
+    const handleEnterKeyPress = (event, createMessage) => {
+        const key = event.keyCode;
+        if (key === 13 && !event.shiftKey) {
+            console.log(users);
+            if (conversationId === "new") {
+               createConversation();
+            } else {
+                sendMessage(conversationId, value, createMessage);
+            }
+            event.target.value = "";
+            onChange("");
+        } else {
+            onChange(event.target.value);
+        }
+
+    };
+
+    const createConversation = () => {
+        client
+            .mutate({
+                mutation: CREATE_CONVERSATION_QUERY,
+                variables: {
+                    userIds: users,
+                    title,
+                    MessageInput: {
+                        message: value
+                    },
+                },
+            })
+            .then(({ data }) => {
+                removeNewConversation();
+                data.createConversation.messages = [];
+                history.push(`/message/${data.createConversation.id}`);
+            });
+    };
+
+    const sendMessage = (conversationId, value, createMessage) => {
+        createMessage({
+            variables: {
+                MessageInput: {
+                    message: value,
+                    conversationId: conversationId,
+                },
+            },
+        });
+    };
+
     return (
         <div className={classes.container}>
             <TopBar title={title ? title : "Messages"} />
@@ -64,44 +112,7 @@ const MessageContainer = (props) => {
                             multiline
                             rowsMax="4"
                             fullWidth
-                            onKeyUp={(e) => {
-                                const key = e.keyCode;
-                                if (key === 13 && !e.shiftKey) {
-                                    if (conversationId === "new") {
-                                        client
-                                            .mutate({
-                                                mutation: CREATE_CONVERSATION_QUERY,
-                                                variables: {
-                                                    userIds: JSON.parse(users),
-                                                    title,
-                                                    MessageInput: {
-                                                        message: value,
-                                                    },
-                                                },
-                                            })
-                                            .then(({ data }) => {
-                                                removeNewConversation();
-                                                data.createConversation.messages = [];
-                                                history.push(
-                                                    `/message/${data.createConversation.id}`
-                                                );
-                                            });
-                                    } else {
-                                        createMessage({
-                                            variables: {
-                                                MessageInput: {
-                                                    message: value,
-                                                    conversationId: conversationId,
-                                                },
-                                            },
-                                        });
-                                    }
-                                    e.target.value = "";
-                                    onChange("");
-                                } else {
-                                    onChange(e.target.value);
-                                }
-                            }}
+                            onKeyUp={(e) => handleEnterKeyPress(e, createMessage)}
                         />
                     )}
                 </Mutation>

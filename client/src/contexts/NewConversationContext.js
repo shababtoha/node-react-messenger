@@ -31,6 +31,7 @@ const NewConversationProvider = (props) => {
         localStorage.removeItem(NEW_CONVERSATION_USERS_KEY);
         setTitle(null);
         setUsers(null);
+        history.push("/message"); //TODO need to check why its not working
     };
 
     return (
