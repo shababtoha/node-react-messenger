@@ -83,6 +83,11 @@ const Conversation = (props) => {
         setModalOpen((open) => !open);
     };
 
+    const goToNewConversation = (title, users) => {
+        setNewConversation(title, users);
+        changeConversation('new', title);
+    }
+
     const sortConversation = (conversationList) => {
         conversationList.getConversations.sort((a, b) => {
             if (!a.messages.length && !b.messages.length) return 0;
@@ -99,7 +104,7 @@ const Conversation = (props) => {
                 <ConversationDialog
                     open={modalOpen}
                     onClose={changeModalOpenState}
-                    addConversation={setNewConversation}
+                    addConversation={goToNewConversation}
                 />
             )}
             <Query query={CONVERSATION_QUERY}>

@@ -23,7 +23,6 @@ const NewConversationProvider = (props) => {
         localStorage.setItem(NEW_CONVERSATION_USERS_KEY, users);
         setTitle(title);
         setUsers(users);
-        history.push("/message/new");
     };
 
     const removeNewConversation = () => {
