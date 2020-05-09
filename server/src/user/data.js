@@ -7,6 +7,8 @@ const {
     AuthenticationError,
 } = require('apollo-server');
 
+const jwtExpireTime = "30 days";
+
 module.exports = {
     getAll: (username, id) => {
         let condition = {};
@@ -42,7 +44,7 @@ module.exports = {
         return User.create(user)
             .then(user => {
                 const token = jwt.sign({id: user.id}, secret, {
-                    expiresIn: 86400
+                    expiresIn: jwtExpireTime
                 });
                 return {token}
             });
@@ -57,7 +59,7 @@ module.exports = {
                 throw new AuthenticationError("Username and Password Does not Match");
 
             const token = jwt.sign({id: user.id}, secret, {
-                expiresIn: 86400 // expires in 24 hours
+                expiresIn: jwtExpireTime
             });
             let passwordIsValid = bcrypt.compareSync(password, user.password);
             if (!passwordIsValid)

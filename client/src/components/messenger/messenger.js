@@ -22,7 +22,7 @@ const Messenger = (props) => {
         <Query query={GET_ME_QUERY}>
             {({ loading, error, data, subscribeToMore }) => {
                 if (loading) return null;
-                if (error) {
+                if (error || (data && data.user === null)) {
                     console.log("GET ME ERROR " + error);
                     return <Redirect to="/login" />;
                 }
