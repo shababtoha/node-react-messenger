@@ -46,7 +46,6 @@ const MessageContainer = (props) => {
     const handleEnterKeyPress = (event, createMessage) => {
         const key = event.keyCode;
         if (key === 13 && !event.shiftKey) {
-            console.log(users);
             if (conversationId === "new") {
                createConversation();
             } else {
@@ -65,7 +64,7 @@ const MessageContainer = (props) => {
             .mutate({
                 mutation: CREATE_CONVERSATION_QUERY,
                 variables: {
-                    userIds: users,
+                    userIds: JSON.parse(users),
                     title,
                     MessageInput: {
                         message: value
