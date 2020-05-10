@@ -42,8 +42,11 @@ app.get('*', (req, res) => {
 server.applyMiddleware({ app });
 
 
-app.listen(process.env.PORT || 4000, function() {
-	console.log("server is running");
+const s = app.listen(process.env.PORT || 4000, function() {
+	console.log("Calling app.listen's callback function.");
+  var host = s.address().address;
+  var port = s.address().port;
+  console.log('Example app listening at http://%s:%s', host, port);
 });
 
 /*.then(({ url,  subscriptionsUrl }) => {
