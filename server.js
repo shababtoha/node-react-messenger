@@ -27,7 +27,8 @@ const server = new ApolloServer({
     typeDefs,
     resolvers,
     subscriptions,
-    context
+    context,
+    playground: true
 });
 
 app.use(exress.static("public"));
