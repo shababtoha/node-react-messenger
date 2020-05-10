@@ -25,18 +25,18 @@ const context = function({ req, connection  }){
 
 
 
-app.use(express.static("public"));
-
-app.get("*", (req, res) => {
-    console.log("getting....");
-    res.sendFile(path.resolve(__dirname, "public", "index.html"));
-});
-
 const server = new ApolloServer({
     typeDefs,
     resolvers,
     subscriptions,
     context
+});
+
+app.use(express.static("public"));
+
+app.get("*", (req, res) => {
+    console.log("getting....");
+    res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
 
 server.applyMiddleware({ app });
