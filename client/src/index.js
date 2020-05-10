@@ -16,7 +16,7 @@ const httpLink = createHttpLink({
 });
 
 const wsLink = new WebSocketLink({
-    uri: `ws://localhost:4000/graphql`,
+    uri: `ws://node-react-messenger.herokuapp.com:54372/graphql`,
     options: {
         reconnect: true,
         connectionParams: {
