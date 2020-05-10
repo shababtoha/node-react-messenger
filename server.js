@@ -42,7 +42,11 @@ app.get('*', (req, res) => {
 server.applyMiddleware({ app });
 
 
-server.listen({ port: process.env.PORT || 4000 }).then(({ url,  subscriptionsUrl }) => {
+app.listen(process.env.PORT || 4000, function() {
+	console.log("server is running");
+});
+
+/*.then(({ url,  subscriptionsUrl }) => {
    console.log(`🚀 Server ready at ${url}`);
    console.log(`🚀 Subscriptions ready at ${subscriptionsUrl}`)
-});
+}); */
