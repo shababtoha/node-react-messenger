@@ -4,9 +4,9 @@ const { ApolloServer } = require('apollo-server');
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
 const subscriptions = require('./subscriptions');
-const exress = require('express');
+const express = require('express');
 const path = require("path");
-const app = exress();
+const app = express();
 
 const context = function({ req, connection  }){
     if(connection) {
@@ -23,21 +23,21 @@ const context = function({ req, connection  }){
     }
 };
 
-const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-    subscriptions,
-    context,
-    playground: true
-});
 
-app.use(exress.static("public"));
+
+app.use(express.static("public"));
 
 app.get("*", (req, res) => {
     console.log("getting....");
     res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
 
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    subscriptions,
+    context
+});
 
 server.listen({ port: process.env.PORT || 4000 }).then(({ url,  subscriptionsUrl }) => {
    console.log(`🚀 Server ready at ${url}`);
