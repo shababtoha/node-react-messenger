@@ -11,9 +11,12 @@ import { WebSocketLink } from "apollo-link-ws";
 import { split } from "apollo-link";
 import { getMainDefinition } from "apollo-utilities";
 
+import dotenv from "dotenv";
+dotenv.config({path: '../../.env'});
 
 
-const PORT = process.env.REACT_APP_PORT
+
+const PORT = process.env.PORT
 console.log(PORT);
  
 
