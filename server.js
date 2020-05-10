@@ -32,13 +32,11 @@ const server = new ApolloServer({
     context
 });
 
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, 'client/build')));
 
-app.get("*", (req, res) => {
-    console.log("getting....");
-    res.sendFile(path.resolve(__dirname, "public", "index.html"));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
-
 
 server.listen({ port: process.env.PORT || 4000 }).then(({ url,  subscriptionsUrl }) => {
    console.log(`🚀 Server ready at ${url}`);
