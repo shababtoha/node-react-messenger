@@ -32,8 +32,9 @@ const server = new ApolloServer({
 
 app.use(exress.static("public"));
 
-app.get("/*", (req, res) => {
-    res.sendFile(__dirname, "public", "index.html");
+app.get("*", (req, res) => {
+    console.log("getting....");
+    res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
 
 
