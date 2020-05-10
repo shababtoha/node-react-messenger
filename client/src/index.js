@@ -10,13 +10,20 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { WebSocketLink } from "apollo-link-ws";
 import { split } from "apollo-link";
 import { getMainDefinition } from "apollo-utilities";
+import dotenv from "dotenv";
+dotenv.config();
+
+
+const PORT = process.env.PORT
+console.log(PORT);
+ 
 
 const httpLink = createHttpLink({
     uri: "/graphql",
 });
 
 const wsLink = new WebSocketLink({
-    uri: `ws://node-react-messenger.herokuapp.com:54372/graphql`,
+    uri: `ws://node-react-messenger.herokuapp.com:${PORT}/graphql`,
     options: {
         reconnect: true,
         connectionParams: {
