@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const secret = "holyHera";
-const { ApolloServer } = require('apollo-server');
+const { ApolloServer } = require('apollo-server-express');
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
 const subscriptions = require('./subscriptions');
