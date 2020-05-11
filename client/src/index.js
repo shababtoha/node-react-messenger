@@ -11,8 +11,8 @@ import { WebSocketLink } from "apollo-link-ws";
 import { split } from "apollo-link";
 import { getMainDefinition } from "apollo-utilities";
 
-const PORT = process.env.REACT_APP_PORT;
-console.log(PORT);
+const PORT = 8000;
+console.log(process.env);
 
 
 
