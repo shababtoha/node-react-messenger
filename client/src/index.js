@@ -10,19 +10,12 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { WebSocketLink } from "apollo-link-ws";
 import { split } from "apollo-link";
 import { getMainDefinition } from "apollo-utilities";
-import dotenv from "dotenv";
-import path from "path";
 
-const envPath = '/app/.env';
-console.log(envPath);
-
-dotenv.config({path: envPath});
-
-console.log(process.env);
-
-const PORT = process.env.PORT
+const PORT = process.env.REACT_APP_PORT;
 console.log(PORT);
- 
+
+
+
 
 const httpLink = createHttpLink({
     uri: "/graphql",
