@@ -7,6 +7,7 @@ const subscriptions = require('./subscriptions');
 const express = require('express');
 const path = require("path");
 const app = express();
+require("dotenv").config();
 
 const context = function({ req, connection  }){
     if(connection) {
@@ -40,6 +41,8 @@ app.get('*', (req, res) => {
 });
 
 server.applyMiddleware({ app });
+
+console.log(process.env);
 
 
 const s = app.listen(process.env.PORT || 4000, function() {
