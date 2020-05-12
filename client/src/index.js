@@ -11,18 +11,13 @@ import { WebSocketLink } from "apollo-link-ws";
 import { split } from "apollo-link";
 import { getMainDefinition } from "apollo-utilities";
 
-const PORT = 8000;
-console.log(process.env);
-
-
-
 
 const httpLink = createHttpLink({
     uri: "/graphql",
 });
 
 const wsLink = new WebSocketLink({
-    uri: `ws://node-react-messenger.herokuapp.com:${PORT}/graphql`,
+    uri: `${window.location.origin.replace(/^http/, 'ws')}/graphql`,
     options: {
         reconnect: true,
         connectionParams: {
