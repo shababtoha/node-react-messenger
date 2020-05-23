@@ -1,7 +1,8 @@
 const User = require('../../models').user;
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const secret = "holyHera";
+require("dotenv").config();
+const secret = process.env.APP_SECRET;
 const { Op } = require("sequelize");
 const {
     AuthenticationError,

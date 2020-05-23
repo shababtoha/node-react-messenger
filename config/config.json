@@ -1,8 +1,8 @@
 {
   "development": {
-    "username": "shahed",
-    "password": "postgres",
-    "database": "messenger",
+    "username": "shabab",
+    "password": "iambatman",
+    "database": "edify",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
@@ -15,11 +15,7 @@
     "operatorsAliases": false
   },
   "production": {
-    "username": "minajjsewqkgfx",
-    "password": "1f606cc0a7ceefea26fedc7223b3d42d4cd7a91fb8daaaa8abb5c0e0bbcfbb5e",
-    "database": "deljijebudb290",
-    "host": "ec2-52-207-93-32.compute-1.amazonaws.com",
-    "dialect": "postgres",
+    "listen_addresses": "*",
     "operatorsAliases": false
   }
 }

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const secret = "holyHera";
+require("dotenv").config();
+const secret = process.env.APP_SECRET;
 
 const subscriptions = {
     onConnect: (connectionParams, webSocket) => {
