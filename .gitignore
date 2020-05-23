@@ -1,7 +1,7 @@
 .env
 
 # dependencies
-node_modules
+/node_modules
 
 # config
 config/config.json
@@ -18,7 +18,5 @@ build
 npm-debug.log
 
 #IDE
-.idea/*
+.idea
 *.swp
-.idea/
-.idea/
